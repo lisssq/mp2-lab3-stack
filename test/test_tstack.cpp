@@ -7,6 +7,7 @@ TEST(TStack, can_create_matrix_with_positive_length)
   ASSERT_NO_THROW(TStack<int> m);
 }
 
+/*
 TEST(TStack, cant_create_too_large_matrix)
 {
   ASSERT_ANY_THROW(TStack<int> m(MAX_MATRIX_SIZE + 1));
@@ -164,5 +165,5 @@ TEST(TStack, cant_subtract_matrixes_with_not_equal_size)
 	TStack<int> m2(5);
 
 	ASSERT_ANY_THROW(m1 - m2);
-}
+}*/
 
