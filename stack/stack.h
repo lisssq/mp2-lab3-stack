@@ -247,3 +247,69 @@ int TStack<T>::GetStartIndex()					// индекс Num
 
 
 
+
+
+class TCalc
+{
+	string infix, postfix;
+	TStack <double> StNum;
+	TStack <char> StChar;
+
+public:
+	void ToPostfix();			// преобразовать из infix в postfix
+	double CalcPostfix();		// перевод в постфиксную форму
+	double Calc();				// вычисления по постфиксной записи
+
+};
+
+
+double TCalc::CalcPostfix()
+{
+	StNum.Clear();
+	for (int i = 0; i < postfix.size(); i++)
+	{
+		if (postfix[i] >= '0' && postfix[i] <= '9')
+		{
+			StNum.Push(postfix[i] - '0');
+		}
+		if (postfix[i] == '+' || postfix[i] == '-' || postfix[i] == '*' || postfix[i] == '/')
+		{
+			double secondNum = StNum.Pop();
+			double firstNum = StNum.Pop();
+
+			switch (postfix[i])
+			{
+			case '+':
+				StNum.Push(firstNum + secondNum);
+				break;
+			case '-':
+				StNum.Push(firstNum - secondNum);
+				break;
+			case '*':
+				StNum.Push(firstNum * secondNum);
+				break;
+			case '/':
+				if (secondNum == 0)
+					throw - 1;
+				StNum.Push(firstNum / secondNum);
+				break;
+			}
+		}
+		return StNum.Pop();
+	}
+	
+}
+
+
+
+void TCalc::ToPostfix()
+{
+
+
+}
+
+
+double TCalc::Calc()
+{
+
+}
