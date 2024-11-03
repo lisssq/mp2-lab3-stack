@@ -2,30 +2,30 @@
 
 #include "gtest.h"
 
-TEST(TStack, can_create_matrix_with_positive_length)
+TEST(TStack, can_create_stack_with_positive_length)
 {
   ASSERT_NO_THROW(TStack<int> m);
 }
 
 /*
-TEST(TStack, cant_create_too_large_matrix)
+TEST(TStack, cant_create_too_large_stack)
 {
-  ASSERT_ANY_THROW(TStack<int> m(MAX_MATRIX_SIZE + 1));
+  ASSERT_ANY_THROW(TStack<int> m(MAX_stack_SIZE + 1));
 }
 
-TEST(TStack, throws_when_create_matrix_with_negative_length)
+TEST(TStack, throws_when_create_stack_with_negative_length)
 {
   ASSERT_ANY_THROW(TStack<int> m(-5));
 }
 
-TEST(TStack, can_create_copied_matrix)
+TEST(TStack, can_create_copied_stack)
 {
   TStack<int> m(5);
 
   ASSERT_NO_THROW(TStack<int> m1(m));
 }
 
-TEST(TStack, copied_matrix_is_equal_to_source_one)
+TEST(TStack, copied_stack_is_equal_to_source_one)
 {
 	TStack<int> m1(5);
 	for (int i = 0; i < 5; i++)
@@ -37,7 +37,7 @@ TEST(TStack, copied_matrix_is_equal_to_source_one)
 	EXPECT_EQ(m1, m2);
 }
 
-TEST(TStack, copied_matrix_has_its_own_memory)
+TEST(TStack, copied_stack_has_its_own_memory)
 {
 	TStack<int> m1(3);
 	m1[0][0] = 1;
@@ -73,20 +73,20 @@ TEST(TStack, throws_when_set_element_with_too_large_index)
 	ASSERT_ANY_THROW(m[3][3] = 10);
 }
 
-TEST(TStack, can_assign_matrix_to_itself)
+TEST(TStack, can_assign_stack_to_itself)
 {
 	TStack<int> m(3);
 	ASSERT_NO_THROW(m = m);
 }
 
-TEST(TStack, can_assign_matrices_of_equal_size)
+TEST(TStack, can_assign_stacks_of_equal_size)
 {
 	TStack<int> m1(3);
 	TStack<int> m2(3);
 	ASSERT_NO_THROW(m1 = m2);
 }
 
-TEST(TStack, assign_operator_change_matrix_size)
+TEST(TStack, assign_operator_change_stack_size)
 {
 	TStack<int> m1(3);
 	TStack<int> m2(5);
@@ -94,34 +94,34 @@ TEST(TStack, assign_operator_change_matrix_size)
 	EXPECT_EQ(m1.GetSize(), 5);
 }
 
-TEST(TStack, can_assign_matrices_of_different_size)
+TEST(TStack, can_assign_stacks_of_different_size)
 {
 	TStack<int> m1(3);
 	TStack<int> m2(5);
 	ASSERT_NO_THROW(m1 = m2);
 }
 
-TEST(TStack, compare_equal_matrices_return_true)
+TEST(TStack, compare_equal_stacks_return_true)
 {
 	TStack<int> m1(3);
 	TStack<int> m2(3);
 	EXPECT_TRUE(m1 == m2);
 }
 
-TEST(TStack, compare_matrix_with_itself_return_true)
+TEST(TStack, compare_stack_with_itself_return_true)
 {
 	TStack<int> m(3);
 	EXPECT_TRUE(m == m);
 }
 
-TEST(TStack, matrices_with_different_size_are_not_equal)
+TEST(TStack, stacks_with_different_size_are_not_equal)
 {
 	TStack<int> m1(3);
 	TStack<int> m2(5);
 	EXPECT_FALSE(m1 == m2);
 }
 
-TEST(TStack, can_add_matrices_with_equal_size)
+TEST(TStack, can_add_stacks_with_equal_size)
 {
 	TStack<int> m1(3);
 	TStack<int> m2(3);
@@ -136,7 +136,7 @@ TEST(TStack, can_add_matrices_with_equal_size)
 	EXPECT_EQ(res[2][2], 9);
 }
 
-TEST(TStack, cant_add_matrices_with_not_equal_size)
+TEST(TStack, cant_add_stacks_with_not_equal_size)
 {
 	TStack<int> m1(3);
 	TStack<int> m2(5);
@@ -144,7 +144,7 @@ TEST(TStack, cant_add_matrices_with_not_equal_size)
 	ASSERT_ANY_THROW(m1 + m2);
 }
 
-TEST(TStack, can_subtract_matrices_with_equal_size)
+TEST(TStack, can_subtract_stacks_with_equal_size)
 {
 	TStack<int> m1(3);
 	TStack<int> m2(3);
@@ -159,7 +159,7 @@ TEST(TStack, can_subtract_matrices_with_equal_size)
 	EXPECT_EQ(res[2][2], -13);
 }
 
-TEST(TStack, cant_subtract_matrixes_with_not_equal_size)
+TEST(TStack, cant_subtract_stacks_with_not_equal_size)
 {
 	TStack<int> m1(3);
 	TStack<int> m2(5);
