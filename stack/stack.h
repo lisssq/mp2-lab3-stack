@@ -259,8 +259,34 @@ public:
 	void ToPostfix();			// преобразовать из infix в postfix
 	double CalcPostfix();		// перевод в постфиксную форму
 	double Calc();				// вычисления по постфиксной записи
+	
+	int GetPriority(char op);	// выдача приоритета для операций
 
+	void SetInfix(const string& stroka)
+	{
+		infix = stroka;
+	}
+	string GetPostfix() const 
+	{ 
+		return postfix; 
+	}
 };
+
+
+
+int TCalc::GetPriority(char op)
+{
+	if (op == '+' || op == '-')
+	{
+		return 1;
+	}
+	if (op == '*' || op == '/')
+	{
+		return 2;
+	}
+	return 0;
+}
+
 
 
 double TCalc::CalcPostfix()
@@ -270,7 +296,7 @@ double TCalc::CalcPostfix()
 	{
 		if (postfix[i] >= '0' && postfix[i] <= '9')
 		{
-			StNum.Push(postfix[i] - '0');
+			StNum.Push(postfix[i] - '0');		// преобразование символа в число
 		}
 		if (postfix[i] == '+' || postfix[i] == '-' || postfix[i] == '*' || postfix[i] == '/')
 		{
@@ -289,27 +315,62 @@ double TCalc::CalcPostfix()
 				StNum.Push(firstNum * secondNum);
 				break;
 			case '/':
-				if (secondNum == 0)
-					throw - 1;
+				if (secondNum == 0)				// обработка деления на ноль
+					cerr << "	Ошибка : деление на ноль недопустимо!" << endl;
 				StNum.Push(firstNum / secondNum);
 				break;
 			}
 		}
-		return StNum.Pop();
+		
 	}
-	
+	return StNum.Pop();
 }
 
 
 
 void TCalc::ToPostfix()
 {
+	postfix = "";
+	StChar.Clear();
 
+	for (int i = 0; i < infix.size(); i++)		// проходим по каждому символу инфикс-строки
+	{
+		char sim = infix[i];					// извлекаем текущий символ 
 
+		if (infix[i] >= '0' && infix[i] <= '9')		// если это цифра (операнда), то 
+		{
+			postfix += sim;								// добавляем ее в постфиксное выражение
+		}
+		else if (sim == '(')					// если это (
+		{
+			StChar.Push(sim);					// помещаем ее в стек для дальнейшей обработки
+		}
+		else if (sim == ')')					// если это )
+		{
+			while (!StChar.Empty() && StChar.Top() != '(')	// то извлекаем операнды до тех пор пока не найдем "("
+			{
+				postfix += StChar.Pop();					// добавляем каждый операнд в постфиксное выражение
+			}
+			StChar.Pop();									// удаляем "(" из стека 
+		}
+		else if (sim == '+' || sim == '-' || sim == '*' || sim == '/')		// если символ - оператор 
+		{
+			while (!StChar.Empty() && GetPriority(StChar.Top()) >= GetPriority(sim))	// извлекаем операторы из стека с приоритетом >= текущему оператору
+			{
+				postfix += StChar.Pop();					// добавляем извлеченный оператор в постф.выражение
+			}
+			StChar.Push(sim);								// помещаем текущий оператор в стек 
+		}	
+	}
+	while (!StChar.Empty())				// перемещаем оставшиеся операторы из стека в постф выражение 
+	{
+		postfix += StChar.Pop();
+	}
+	
 }
 
 
-double TCalc::Calc()
-{
-
-}
+//double TCalc::Calc()
+//{
+//
+//}
