@@ -99,6 +99,7 @@ TStack<T>::TStack(const TStack& s)		// конструктор копирования
 	}
 }
 
+
 template <class T>
 TStack<T>& TStack<T>::operator=(const TStack<T> s) 	// оператор присваивания
 {
@@ -119,13 +120,10 @@ TStack<T>& TStack<T>::operator=(const TStack<T> s) 	// оператор присваивания
 	return *this;
 }
 
+
 template <class T>
 bool TStack<T>::operator==(const TStack& s) const // оператор сравнение
 {
-	if (_MaxSize<0 || _MaxSize>MAX_SZ)
-	{
-		throw "Недопустимый размер стека";
-	}
 	if (this == &s)
 	{
 		return true;
@@ -149,6 +147,7 @@ bool TStack<T>::operator==(const TStack& s) const // оператор сравнение
 
 }
 
+
 template <class T>
 bool TStack<T>::operator!=(const TStack& s) const // оператор сравнение
 {
@@ -157,6 +156,7 @@ bool TStack<T>::operator!=(const TStack& s) const // оператор сравнение
 	}
 	return !(*this == s);
 }
+
 
 template <class T>
 T TStack<T>::Pop()
@@ -170,6 +170,7 @@ T TStack<T>::Pop()
 	return tmp;
 }
 
+
 template <class T>
 void TStack<T>::Push(T val)
 {
@@ -180,6 +181,7 @@ void TStack<T>::Push(T val)
 	Num++;
 	pMem[Num] = val;
 }
+
 
 template <class T>
 bool TStack<T>::Check(string str)
@@ -233,6 +235,7 @@ T TStack<T>::Top() const
 	return pMem[Num];
 }
 
+
 template <class T>
 void TStack<T>::Clear()
 {
@@ -246,6 +249,7 @@ int TStack<T>::GetSize()
 	return MaxSize;
 }
 
+
 template <class T>
 int TStack<T>::GetStartIndex()					// индекс Num
 {
@@ -254,7 +258,7 @@ int TStack<T>::GetStartIndex()					// индекс Num
 
 
 
-
+// ----------------------------------------------------------------------------------
 
 
 class TCalc
@@ -310,8 +314,14 @@ double TCalc::CalcPostfix()
 		{
 			StNum.Push(postfix[i] - '0');		// преобразование символа в число
 		}
-		if (postfix[i] == '+' || postfix[i] == '-' || postfix[i] == '*' || postfix[i] == '/')
+		else if (postfix[i] == '+' || postfix[i] == '-' || postfix[i] == '*' || postfix[i] == '/')
 		{
+			if (StNum.GetStartIndex() < 1) 
+			{
+				//throw "Ошибка: недостаточно операндов для выполнения операции";
+				throw - 1;
+
+			}
 			double secondNum = StNum.Pop();
 			double firstNum = StNum.Pop();
 
@@ -328,12 +338,18 @@ double TCalc::CalcPostfix()
 				break;
 			case '/':
 				if (secondNum == 0)				// обработка деления на ноль
-					cerr << "	Ошибка : деление на ноль недопустимо!" << endl;
+				{
+					throw "Ошибка : деление на ноль недопустимо!";
+				}
 				StNum.Push(firstNum / secondNum);
 				break;
 			}
 		}
 		
+	}
+	if (StNum.GetStartIndex() != 0) 
+	{
+		throw "Ошибка: неверное количество операндов в выражении";
 	}
 	return StNum.Pop();
 }
@@ -344,6 +360,7 @@ void TCalc::ToPostfix()
 {
 	postfix = "";
 	StChar.Clear();
+	
 
 	for (int i = 0; i < infix.size(); i++)		// проходим по каждому символу инфикс-строки
 	{
@@ -352,6 +369,7 @@ void TCalc::ToPostfix()
 		if (infix[i] >= '0' && infix[i] <= '9')		// если это цифра (операнда), то 
 		{
 			postfix += sim;								// добавляем ее в постфиксное выражение
+			
 		}
 		else if (sim == '(')					// если это (
 		{
@@ -361,7 +379,9 @@ void TCalc::ToPostfix()
 		{
 			while (!StChar.Empty() && StChar.Top() != '(')	// то извлекаем операнды до тех пор пока не найдем "("
 			{
+				//postfix += " ";
 				postfix += StChar.Pop();					// добавляем каждый операнд в постфиксное выражение
+				//postfix += " ";
 			}
 			StChar.Pop();									// удаляем "(" из стека 
 		}
@@ -369,21 +389,25 @@ void TCalc::ToPostfix()
 		{
 			while (!StChar.Empty() && GetPriority(StChar.Top()) >= GetPriority(sim))	// извлекаем операторы из стека с приоритетом >= текущему оператору
 			{
+				//postfix += " ";
 				postfix += StChar.Pop();					// добавляем извлеченный оператор в постф.выражение
+				//postfix += " ";
 			}
 			StChar.Push(sim);								// помещаем текущий оператор в стек 
 		}	
 	}
 	while (!StChar.Empty())				// перемещаем оставшиеся операторы из стека в постф выражение 
 	{
+		//postfix += " ";
 		postfix += StChar.Pop();
+		//postfix += " ";
 	}
 	
 }
 
 
-double TCalc::Calc()
-{
-	ToPostfix();
-	return CalcPostfix();
-}
+//double TCalc::Calc()
+//{
+//	ToPostfix();
+//	return CalcPostfix();
+//}

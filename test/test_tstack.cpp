@@ -4,8 +4,44 @@
 
 TEST(TStack, can_create_stack_with_positive_length)
 {
-  ASSERT_NO_THROW(TStack<int> stack);
+  ASSERT_NO_THROW(TStack<int> stack(10));
 }
+
+TEST(TCalc, test1)
+{
+    TCalc calc;
+    calc.SetInfix("3+5*2-8/4");
+    calc.ToPostfix();
+    ASSERT_EQ(calc.GetPostfix(), "352*+84/-");
+}
+
+TEST(TCalc, test2)
+{
+    TCalc calc;
+    calc.SetInfix("(5+9-8)*4-14/7+5");
+    calc.ToPostfix();
+    ASSERT_EQ(calc.GetPostfix(), "59+8-4*147/-5+");
+    
+}
+TEST(TCalc, test3)
+{
+    TCalc calc;
+    calc.SetInfix("(3+5*(2-8/4)+7)*(4+3*2-(1+2))");
+    calc.ToPostfix();
+    ASSERT_EQ(calc.GetPostfix(), "35284/-*+7+432*+12+-*");
+   
+}
+
+TEST(TCalc, test4)
+{
+    TCalc calc;
+    calc.SetInfix("(((1+5)*7-9*(4/2)-1)+15-3)");
+    calc.ToPostfix();
+    ASSERT_EQ(calc.GetPostfix(), "15+7*942/*-1-15+3-");
+    
+}
+
+
 
 TEST(TStack, cant_create_too_large_stack)
 {
@@ -138,6 +174,10 @@ TEST(TStack, compare_equal_stacks_return_true)
 
     EXPECT_TRUE(stack1 == stack2);
 }
+
+
+
+
 
 //TEST(TStack, can_get_size)
 //{
