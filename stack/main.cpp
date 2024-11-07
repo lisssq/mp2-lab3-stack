@@ -21,20 +21,24 @@ int main()
 
     cout << "Содержимое стека: ";
     cout << stack << endl;
-
+    cout << "----------" << endl;
 
     TCalc calculator;
 
     //calculator.SetInfix("4 * (7 + 3) - 6 / 2");
     calculator.SetInfix("(3 + 5 * (2 - 8 / 4) + 7)* (4 + 3 * 2 - (1 + 2))");
 
+    cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
+
+
     calculator.ToPostfix();
 
     cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
-
+    // ожижается ответ:   35284/-*+7+432*+12+-*
+    // 
     // вычисляем значение постфиксного выражения и выводим результат
     double result = calculator.CalcPostfix();
-    cout << "Результат: " << result << endl;
+    cout << "Результат выражения: " << result << endl;
     
     return 0;
 }

@@ -270,6 +270,10 @@ public:
 	{ 
 		return postfix; 
 	}
+	string GetInfix() const
+	{
+		return infix;
+	}
 };
 
 
@@ -370,7 +374,8 @@ void TCalc::ToPostfix()
 }
 
 
-//double TCalc::Calc()
-//{
-//
-//}
+double TCalc::Calc()
+{
+	ToPostfix();
+	return CalcPostfix();
+}
