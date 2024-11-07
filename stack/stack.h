@@ -67,7 +67,8 @@ TStack <T>::TStack(int _MaxSize)		// конструктор инициализации
 {
 	if (_MaxSize<0 || _MaxSize>MAX_SZ)
 	{
-		throw - 1;
+		//throw - 1;
+		throw "Недопустимый размер стека";
 	}
 	MaxSize = _MaxSize;
 	Num = -1;
@@ -87,7 +88,7 @@ TStack<T>::TStack(const TStack& s)		// конструктор копирования
 {
 	if (s.MaxSize<0 || s.MaxSize>MAX_SZ || s.Num < -1 || s.Num >= s.MaxSize)
 	{
-		throw - 1;
+		throw "Недопустимый размер стека";
 	}
 	MaxSize = s.MaxSize;
 	Num = s.Num;
@@ -121,6 +122,10 @@ TStack<T>& TStack<T>::operator=(const TStack<T> s) 	// оператор присваивания
 template <class T>
 bool TStack<T>::operator==(const TStack& s) const // оператор сравнение
 {
+	if (_MaxSize<0 || _MaxSize>MAX_SZ)
+	{
+		throw "Недопустимый размер стека";
+	}
 	if (this == &s)
 	{
 		return true;
@@ -147,6 +152,9 @@ bool TStack<T>::operator==(const TStack& s) const // оператор сравнение
 template <class T>
 bool TStack<T>::operator!=(const TStack& s) const // оператор сравнение
 {
+	if (MaxSize != s.MaxSize || Num != s.Num) {
+		return false;
+	}
 	return !(*this == s);
 }
 
@@ -155,7 +163,7 @@ T TStack<T>::Pop()
 {
 	if (this->Empty())
 	{
-		throw - 1;
+		throw "Ошибка: попытка извлечь элемент из пустого стека";
 	}
 	T tmp = pMem[Num];
 	Num--;
@@ -167,7 +175,7 @@ void TStack<T>::Push(T val)
 {
 	if (this->Full())
 	{
-		throw - 101;
+		throw "Ошибка: стек переполнен";
 	}
 	Num++;
 	pMem[Num] = val;
@@ -220,7 +228,7 @@ T TStack<T>::Top() const
 {
 	if (this->Empty())
 	{
-		throw - 1;
+		throw "Ошибка: попытка доступа к вершине пустого стека";
 	}
 	return pMem[Num];
 }
