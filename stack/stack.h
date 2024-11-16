@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string.h>
+#include <string>
 using namespace std;
 
 const int MAX_SZ = 10000;
@@ -163,7 +164,8 @@ T TStack<T>::Pop()
 {
 	if (this->Empty())
 	{
-		throw "Ошибка: попытка извлечь элемент из пустого стека";
+		//throw "Ошибка: попытка извлечь элемент из пустого стека";
+		throw - 1;
 	}
 	T tmp = pMem[Num];
 	Num--;
@@ -199,8 +201,9 @@ bool TStack<T>::Check(string str)
 			if (s.Empty())
 			{
 				return false;
-				s.Pop();
+				//s.Pop();
 			}
+			s.Pop();	
 		}
 	}
 	if (!s.Empty())
@@ -268,6 +271,7 @@ class TCalc
 	TStack <char> StChar;
 
 public:
+	TCalc();
 	void ToPostfix();			// преобразовать из infix в postfix
 	double CalcPostfix();		// перевод в постфиксную форму
 	double Calc();				// вычисления по постфиксной записи
@@ -288,6 +292,12 @@ public:
 	}
 };
 
+TCalc::TCalc()
+{
+	StNum = TStack<double>(MAX_SZ);
+	StChar = TStack<char>(MAX_SZ);
+	
+}
 
 
 int TCalc::GetPriority(char op)
@@ -296,11 +306,18 @@ int TCalc::GetPriority(char op)
 	{
 		return 1;
 	}
-	if (op == '*' || op == '/')
+	else if (op == '*' || op == '/')
 	{
 		return 2;
 	}
-	return 0;
+	else if (op == '^')
+	{
+		return 3;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 
@@ -308,15 +325,20 @@ int TCalc::GetPriority(char op)
 double TCalc::CalcPostfix()
 {
 	StNum.Clear();
+	StChar.Clear();
 	for (int i = 0; i < postfix.size(); i++)
 	{
-		if (postfix[i] >= '0' && postfix[i] <= '9')
+		if (i > 0 && postfix[i] >= '0' && postfix[i] <= '9' && postfix[i - 1] == '_')		//ищем отрицательное число
+		{
+			StNum.Push((postfix[i] - '0') * (-1));
+		}
+		else if (postfix[i] >= '0' && postfix[i] <= '9')
 		{
 			StNum.Push(postfix[i] - '0');		// преобразование символа в число
 		}
-		else if (postfix[i] == '+' || postfix[i] == '-' || postfix[i] == '*' || postfix[i] == '/')
+		else if (postfix[i] == '+' || postfix[i] == '-' || postfix[i] == '*' || postfix[i] == '/' || postfix[i] == '^')
 		{
-			if (StNum.GetStartIndex() < 1) 
+			if (StNum.GetStartIndex() < 1)
 			{
 				//throw "Ошибка: недостаточно операндов для выполнения операции";
 				throw - 1;
@@ -343,13 +365,26 @@ double TCalc::CalcPostfix()
 				}
 				StNum.Push(firstNum / secondNum);
 				break;
+			case '^':
+				int p = pow(secondNum, -1);
+				if (p % 2 == 0 && firstNum < 0)
+				{
+					throw - 1;
+				}
+				StNum.Push(pow(firstNum, secondNum));
 			}
 		}
-		
 	}
+	
+	if (StNum.Empty())
+	{
+		throw - 1;
+	}
+	
 	if (StNum.GetStartIndex() != 0) 
 	{
-		throw "Ошибка: неверное количество операндов в выражении";
+		//throw "Ошибка: неверное количество операндов в выражении";
+		throw - 1;
 	}
 	return StNum.Pop();
 }
@@ -360,40 +395,50 @@ void TCalc::ToPostfix()
 {
 	postfix = "";
 	StChar.Clear();
-	
-
-	for (int i = 0; i < infix.size(); i++)		// проходим по каждому символу инфикс-строки
+	string sim = "(" + infix + ")";				//  текущий символ 
+	if (!StChar.Check(infix)) {
+		throw - 1;
+	}
+	for (int i = 0; i < sim.length(); i++)		// проходим по каждому символу инфикс-строки
 	{
-		char sim = infix[i];					// извлекаем текущий символ 
-
-		if (infix[i] >= '0' && infix[i] <= '9')		// если это цифра (операнда), то 
+		if (sim[i] == '(')					// если это (
 		{
-			postfix += sim;								// добавляем ее в постфиксное выражение
+			StChar.Push(sim[i]);					// помещаем ее в стек для дальнейшей обработки
+		}
+
+		else if (sim[i - 1] == '(' && sim[i] == '-')	//обработка унарного минуса
+		{
+			postfix += '_';
+		}
+
+		else if (sim[i] >= '0' && sim[i] <= '9' || sim[i] == '.')		// если это цифра (операнда), то 
+		{
+			postfix += sim[i];								// добавляем ее в постфиксное выражение
 			
 		}
-		else if (sim == '(')					// если это (
+		 
+		else if (sim[i] == ')')					// если это )
 		{
-			StChar.Push(sim);					// помещаем ее в стек для дальнейшей обработки
-		}
-		else if (sim == ')')					// если это )
-		{
-			while (!StChar.Empty() && StChar.Top() != '(')	// то извлекаем операнды до тех пор пока не найдем "("
+			char a = StChar.Pop();
+			while (a!='(')	// то извлекаем операнды до тех пор пока не найдем "("
 			{
 				//postfix += " ";
-				postfix += StChar.Pop();					// добавляем каждый операнд в постфиксное выражение
+				postfix += a;				// добавляем каждый операнд в постфиксное выражение
+				a = StChar.Pop();
+
 				//postfix += " ";
 			}
-			StChar.Pop();									// удаляем "(" из стека 
+			//StChar.Pop();									// удаляем "(" из стека 
 		}
-		else if (sim == '+' || sim == '-' || sim == '*' || sim == '/')		// если символ - оператор 
+		else if (sim[i] == '+' || sim[i] == '-' || sim[i] == '*' || sim[i] == '/')		// если символ - оператор 
 		{
-			while (!StChar.Empty() && GetPriority(StChar.Top()) >= GetPriority(sim))	// извлекаем операторы из стека с приоритетом >= текущему оператору
+			while (!StChar.Empty() && GetPriority(StChar.Top()) >= GetPriority(sim[i]))	// извлекаем операторы из стека с приоритетом >= текущему оператору
 			{
 				//postfix += " ";
 				postfix += StChar.Pop();					// добавляем извлеченный оператор в постф.выражение
 				//postfix += " ";
 			}
-			StChar.Push(sim);								// помещаем текущий оператор в стек 
+			StChar.Push(sim[i]);								// помещаем текущий оператор в стек 
 		}	
 	}
 	while (!StChar.Empty())				// перемещаем оставшиеся операторы из стека в постф выражение 
@@ -406,8 +451,129 @@ void TCalc::ToPostfix()
 }
 
 
-//double TCalc::Calc()
-//{
-//	ToPostfix();
-//	return CalcPostfix();
-//}
+double TCalc::Calc()
+{
+	string str = '(' + infix + ')';
+	StChar.Clear();
+	StNum.Clear();
+	if (!StChar.Check(infix))
+	{
+		throw - 1;
+	}
+	for (int i = 0; i < str.size(); i++)
+	{
+		char tmp = str[i];
+		if (tmp == '(')
+		{
+			StChar.Push(tmp);
+		}
+
+
+		else if (str[i - 1] == '(' && tmp == '-')
+		{
+			str[i] = '_';
+		}
+
+
+
+		else if (i > 0 && tmp >= '0' && tmp <= '9' && str[i - 1] == '_')
+		{
+			size_t idx;
+			double num = stod(&tmp, &idx);
+			StNum.Push(num * (-1.0));
+			i += idx - 1;
+		}
+		else if (tmp >= '0' && tmp <= '9' || tmp == '.')
+		{
+			size_t idx;
+			double num = stod(&tmp, &idx);
+			StNum.Push(num);
+			i += idx - 1;
+		}
+		else if (tmp - ')')
+		{
+			char a = StChar.Pop();
+			while (a != '(')
+			{
+				double second_num = StNum.Pop();
+				double first_num = StNum.Pop();
+				if (a == '+')
+				{
+					StNum.Push(first_num + second_num);
+				}
+				if (a == '-')
+				{
+					StNum.Push(first_num - second_num);
+				}
+				if (a == '*')
+				{
+					StNum.Push(first_num * second_num);
+				}
+				if (a == '/')
+				{
+					if (second_num == 0)				// обработка деления на ноль
+					{
+						throw "Ошибка : деление на ноль недопустимо!";
+					}
+					StNum.Push(first_num / second_num);
+				}
+				if (a == '^')
+				{
+					int p = pow(second_num, -1);
+					if (p % 2 == 0 && first_num < 0)
+					{
+						throw - 1;
+					}
+					StNum.Push(pow(first_num, second_num));
+				}
+				a = StChar.Pop();
+			}
+		}
+		else if (tmp == '+' || tmp == '-' || tmp == '*' || tmp == '/' || tmp == '^')
+		{
+			while (GetPriority(StChar.Top()) >= GetPriority(tmp))
+			{
+				double second_num = StNum.Pop();
+				double first_num = StNum.Pop();
+				char a = StChar.Pop();
+				if (a == '+')
+				{
+					StNum.Push(first_num + second_num);
+				}
+				if (a == '-')
+				{
+					StNum.Push(first_num - second_num);
+				}
+				if (a == '*')
+				{
+					StNum.Push(first_num * second_num);
+				}
+				if (a == '/')
+				{
+					if (second_num == 0)				// обработка деления на ноль
+					{
+						throw "Ошибка : деление на ноль недопустимо!";
+					}
+					StNum.Push(first_num / second_num);
+				}
+				if (a == '^')
+				{
+					int p = pow(second_num, -1);
+					if (p % 2 == 0 && first_num < 0)
+					{
+						throw - 1;
+					}
+					StNum.Push(pow(first_num, second_num));
+				}
+			}
+			StChar.Push(tmp);
+		}
+	}
+	double a = StNum.Pop();
+	if (StNum.Empty())
+	{
+		throw - 1;
+	}
+	return a;
+
+}

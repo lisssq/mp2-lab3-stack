@@ -21,7 +21,7 @@ int main()
 
     cout << "Содержимое стека: ";
     cout << stack << endl;
-    cout << "----------" << endl;
+    cout << "--------------" << endl;
 
     TCalc calculator;
 
@@ -39,6 +39,22 @@ int main()
     // вычисляем значение постфиксного выражения и выводим результат
     double result = calculator.CalcPostfix();
     cout << "Результат выражения: " << result << endl;
+
+    cout << "--------------" << endl;
+
+    calculator.SetInfix("6/4");
+    cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
+    calculator.ToPostfix();
+    cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
+    cout << "Результат выражения: " << calculator.Calc() << endl;
     
+    cout << "--------------" << endl;
+
+    calculator.SetInfix("(21/5)+9-18");
+    cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
+    calculator.ToPostfix();
+    cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
+    cout << "Результат выражения: " << calculator.Calc() << endl;
+
     return 0;
 }
