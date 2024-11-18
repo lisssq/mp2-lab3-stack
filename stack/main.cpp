@@ -23,11 +23,11 @@ int main()
     cout << stack << endl;
     cout << "----------" << endl;
 
+
     TCalc calculator;
 
-    //calculator.SetInfix("4 * (7 + 3) - 6 / 2");
+    
     calculator.SetInfix("(3 + 5 * (2 - 8 / 4) + 7)* (4 + 3 * 2 - (1 + 2))");
-
     cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
     calculator.ToPostfix();
     cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
@@ -40,7 +40,7 @@ int main()
 
 
 
-
+/*
     calculator.SetInfix("3+5*2-8/4");
     cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
     calculator.ToPostfix();
@@ -73,12 +73,25 @@ int main()
     calculator.ToPostfix();
     cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
     // ожидается ответ:  3 5 2 3 ^ * + 4 -
-
     // вычисляем значение постфиксного выражения и выводим результат
     result = calculator.CalcPostfix();
     cout << "Результат выражения: " << result << endl;
     cout << "----------" << endl;
 
+    */
+
+
+
+
+    calculator.SetInfix("(21/5)+9+18");
+    cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
+    calculator.ToPostfix();
+    cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
+    // ожидается ответ:  21 5 / 9 + 18 +
+    // вычисляем значение постфиксного выражения и выводим результат
+    result = calculator.CalcPostfix();
+    cout << "Результат выражения: " << result << endl;
+    cout << "----------" << endl;
 
     return 0;
 }
