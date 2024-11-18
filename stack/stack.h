@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string.h>
 #include <string>
+#include <cmath>
 using namespace std;
 
 const int MAX_SZ = 10000;
@@ -15,42 +16,35 @@ class TStack
 
 public:
 
-	TStack(int _MaxSize = 10);			//конструктор инициализации
-	~TStack();							//деструктор
-	TStack(const TStack& s);			//конструктор копирования
+	TStack(int _MaxSize = 10);			//РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё
+	~TStack();							//РґРµСЃС‚СЂСѓРєС‚РѕСЂ
+	TStack(const TStack& s);			//РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєРѕРїРёСЂРѕРІР°РЅРёСЏ
 
-	int GetSize();					//размер стека
-	
-	int GetStartIndex();			// индекс Num
-	
+	int GetSize();					//СЂР°Р·РјРµСЂ СЃС‚РµРєР°
+	int GetStartIndex();			// РёРЅРґРµРєСЃ Num
 
-	TStack& operator=(const TStack<T> s);			//оператор присваивания
-	bool operator==(const TStack &s) const;		//сравнение равно
-	bool operator!=(const TStack &s) const;		//сравнение не равно
-
+	TStack& operator=(const TStack<T>& s); //РѕРїРµСЂР°С‚РѕСЂ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ
+	bool operator==(const TStack& s) const;		//СЃСЂР°РІРЅРµРЅРёРµ СЂР°РІРЅРѕ
+	bool operator!=(const TStack& s) const;		//СЃСЂР°РІРЅРµРЅРёРµ РЅРµ СЂР°РІРЅРѕ
 
 	T Pop();
-	void Push(T val);						// добавление элемента в стек
+	void Push(T val);						// РґРѕР±Р°РІР»РµРЅРёРµ СЌР»РµРјРµРЅС‚Р° РІ СЃС‚РµРє
 	bool Check(string str);
-	void Clear();							// очистка стека
-	
+	void Clear();							// РѕС‡РёСЃС‚РєР° СЃС‚РµРєР°
 
-
-	T Top() const;							// посмотреть на вершину стека
-	bool Empty() const;						// проверка на пустоту (номер эл-та = -1)
-	bool Full() const;						// проверка на заполненность (макс.сайз - 1)
-
+	T Top() const;							// РїРѕСЃРјРѕС‚СЂРµС‚СЊ РЅР° РІРµСЂС€РёРЅСѓ СЃС‚РµРєР°
+	bool Empty() const;						// РїСЂРѕРІРµСЂРєР° РЅР° РїСѓСЃС‚РѕС‚Сѓ (РЅРѕРјРµСЂ СЌР»-С‚Р° = -1)
+	bool Full() const;						// РїСЂРѕРІРµСЂРєР° РЅР° Р·Р°РїРѕР»РЅРµРЅРЅРѕСЃС‚СЊ (РјР°РєСЃ.СЃР°Р№Р· - 1)
 
 	friend istream& operator>>(istream& in, TStack& s)
 	{
 		T val;
-		cout << "Введите элементы стека (введите 0 для завершения): ";
+		cout << "Р’РІРµРґРёС‚Рµ СЌР»РµРјРµРЅС‚С‹ СЃС‚РµРєР° (РІРІРµРґРёС‚Рµ 0 РґР»СЏ Р·Р°РІРµСЂС€РµРЅРёСЏ): ";
 		while (in >> val && val != 0) {
 			s.Push(val);
 		}
 		return in;
 	}
-
 	friend ostream& operator<<(ostream& out, const TStack& s)
 	{
 		for (int i = 0; i <= s.Num; i++) {
@@ -58,18 +52,16 @@ public:
 		}
 		return out;
 	}
-
-
 };
 
 
 template <class T>
-TStack <T>::TStack(int _MaxSize)		// конструктор инициализации
+TStack <T>::TStack(int _MaxSize)		// РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё
 {
 	if (_MaxSize<0 || _MaxSize>MAX_SZ)
 	{
 		//throw - 1;
-		throw "Недопустимый размер стека";
+		throw "РќРµРґРѕРїСѓСЃС‚РёРјС‹Р№ СЂР°Р·РјРµСЂ СЃС‚РµРєР°";
 	}
 	MaxSize = _MaxSize;
 	Num = -1;
@@ -78,18 +70,22 @@ TStack <T>::TStack(int _MaxSize)		// конструктор инициализации
 
 
 template <class T>
-TStack<T>::~TStack()					// деструктор
+TStack<T>::~TStack()					// РґРµСЃС‚СЂСѓРєС‚РѕСЂ
 {
-	delete[] pMem;
+	if (pMem)
+	{
+		delete[] pMem;
+		pMem = nullptr;
+	}
 }
 
 
 template <class T>
-TStack<T>::TStack(const TStack& s)		// конструктор копирования
+TStack<T>::TStack(const TStack& s)		// РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєРѕРїРёСЂРѕРІР°РЅРёСЏ
 {
 	if (s.MaxSize<0 || s.MaxSize>MAX_SZ || s.Num < -1 || s.Num >= s.MaxSize)
 	{
-		throw "Недопустимый размер стека";
+		throw "РќРµРґРѕРїСѓСЃС‚РёРјС‹Р№ СЂР°Р·РјРµСЂ СЃС‚РµРєР°";
 	}
 	MaxSize = s.MaxSize;
 	Num = s.Num;
@@ -102,14 +98,14 @@ TStack<T>::TStack(const TStack& s)		// конструктор копирования
 
 
 template <class T>
-TStack<T>& TStack<T>::operator=(const TStack<T> s) 	// оператор присваивания
+TStack<T>& TStack<T>::operator=(const TStack<T>& s) 	// РѕРїРµСЂР°С‚РѕСЂ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ
 {
 	if (this != &s)
 	{
 		if (MaxSize != s.MaxSize)
 		{
-			MaxSize = s.MaxSize;
 			delete[] pMem;
+			MaxSize = s.MaxSize;
 			pMem = new T[MaxSize];
 		}
 		Num = s.Num;
@@ -123,7 +119,7 @@ TStack<T>& TStack<T>::operator=(const TStack<T> s) 	// оператор присваивания
 
 
 template <class T>
-bool TStack<T>::operator==(const TStack& s) const // оператор сравнение
+bool TStack<T>::operator==(const TStack& s) const // РѕРїРµСЂР°С‚РѕСЂ СЃСЂР°РІРЅРµРЅРёРµ
 {
 	if (this == &s)
 	{
@@ -145,12 +141,11 @@ bool TStack<T>::operator==(const TStack& s) const // оператор сравнение
 		}
 	}
 	return true;
-
 }
 
 
 template <class T>
-bool TStack<T>::operator!=(const TStack& s) const // оператор сравнение
+bool TStack<T>::operator!=(const TStack& s) const // РѕРїРµСЂР°С‚РѕСЂ СЃСЂР°РІРЅРµРЅРёРµ
 {
 	if (MaxSize != s.MaxSize || Num != s.Num) {
 		return false;
@@ -162,10 +157,9 @@ bool TStack<T>::operator!=(const TStack& s) const // оператор сравнение
 template <class T>
 T TStack<T>::Pop()
 {
-	if (this->Empty())
+	if (Empty())
 	{
-		//throw "Ошибка: попытка извлечь элемент из пустого стека";
-		throw - 1;
+		throw - 2;
 	}
 	T tmp = pMem[Num];
 	Num--;
@@ -173,12 +167,13 @@ T TStack<T>::Pop()
 }
 
 
+
 template <class T>
 void TStack<T>::Push(T val)
 {
-	if (this->Full())
+	if (Full())
 	{
-		throw "Ошибка: стек переполнен";
+		throw - 2;
 	}
 	Num++;
 	pMem[Num] = val;
@@ -201,14 +196,10 @@ bool TStack<T>::Check(string str)
 			if (s.Empty())
 			{
 				return false;
-				//s.Pop();
+
 			}
-			s.Pop();	
+			s.Pop();
 		}
-	}
-	if (!s.Empty())
-	{
-		return false;
 	}
 	return true;
 }
@@ -231,9 +222,9 @@ bool TStack<T>::Full() const
 template <class T>
 T TStack<T>::Top() const
 {
-	if (this->Empty())
+	if (Empty())
 	{
-		throw "Ошибка: попытка доступа к вершине пустого стека";
+		throw "РѕС€РёР±РєР°: РїРѕРїС‹С‚РєР° РґРѕСЃС‚СѓРїР° Рє РІРµСЂС€РёРЅРµ РїСѓСЃС‚РѕРіРѕ СЃС‚РµРєР°";
 	}
 	return pMem[Num];
 }
@@ -254,11 +245,10 @@ int TStack<T>::GetSize()
 
 
 template <class T>
-int TStack<T>::GetStartIndex()					// индекс Num
+int TStack<T>::GetStartIndex()					// РёРЅРґРµРєСЃ Num
 {
 	return Num;
 }
-
 
 
 // ----------------------------------------------------------------------------------
@@ -271,20 +261,21 @@ class TCalc
 	TStack <char> StChar;
 
 public:
-	TCalc();
-	void ToPostfix();			// преобразовать из infix в postfix
-	double CalcPostfix();		// перевод в постфиксную форму
-	double Calc();				// вычисления по постфиксной записи
-	
-	int GetPriority(char op);	// выдача приоритета для операций
+	void ToPostfix();			// РїСЂРµРѕР±СЂР°Р·РѕРІР°С‚СЊ РёР· infix РІ postfix
+	double CalcPostfix();		// РїРµСЂРµРІРѕРґ РІ РїРѕСЃС‚С„РёРєСЃРЅСѓСЋ С„РѕСЂРјСѓ
+	double Calc();				// РІС‹С‡РёСЃР»РµРЅРёСЏ РїРѕ РїРѕСЃС‚С„РёРєСЃРЅРѕР№ Р·Р°РїРёСЃРё
+
+	double PerformOperation(double firstNum, double secondNum, char op);		// Р°Р»РіРѕСЂРёС‚Рј РѕР±СЂР°С‚РЅРѕР№ РїРѕР»СЊСЃРєРѕР№ РЅРѕС‚Р°С†РёРё
+
+	int GetPriority(char op);	// РІС‹РґР°С‡Р° РїСЂРёРѕСЂРёС‚РµС‚Р° РґР»СЏ РѕРїРµСЂР°С†РёР№
 
 	void SetInfix(const string& stroka)
 	{
 		infix = stroka;
 	}
-	string GetPostfix() const 
-	{ 
-		return postfix; 
+	string GetPostfix() const
+	{
+		return postfix;
 	}
 	string GetInfix() const
 	{
@@ -292,12 +283,6 @@ public:
 	}
 };
 
-TCalc::TCalc()
-{
-	StNum = TStack<double>(MAX_SZ);
-	StChar = TStack<char>(MAX_SZ);
-	
-}
 
 
 int TCalc::GetPriority(char op)
@@ -306,18 +291,15 @@ int TCalc::GetPriority(char op)
 	{
 		return 1;
 	}
-	else if (op == '*' || op == '/')
+	if (op == '*' || op == '/')
 	{
 		return 2;
 	}
-	else if (op == '^')
+	if (op == '^')
 	{
 		return 3;
 	}
-	else
-	{
-		return 0;
-	}
+	return 0;
 }
 
 
@@ -325,68 +307,46 @@ int TCalc::GetPriority(char op)
 double TCalc::CalcPostfix()
 {
 	StNum.Clear();
-	StChar.Clear();
+	string number = "";
+
 	for (int i = 0; i < postfix.size(); i++)
 	{
-		if (i > 0 && postfix[i] >= '0' && postfix[i] <= '9' && postfix[i - 1] == '_')		//ищем отрицательное число
+		char sim = postfix[i];
+
+		if (isdigit(sim) || sim == '.')
 		{
-			StNum.Push((postfix[i] - '0') * (-1));
+			number += sim;		// СЃРѕР±РёСЂР°РµРј С‡РёСЃР»Рѕ
 		}
-		else if (postfix[i] >= '0' && postfix[i] <= '9')
+		else if (sim == ' ' && !number.empty())
 		{
-			StNum.Push(postfix[i] - '0');		// преобразование символа в число
+			double num = stod(number);
+			StNum.Push(num);
+			//cout << "Р”РѕР±Р°РІР»РµРЅРѕ С‡РёСЃР»Рѕ РІ СЃС‚РµРє: " << num << endl; // Р”Р»СЏ РѕС‚Р»Р°РґРєРё
+			number = "";
 		}
-		else if (postfix[i] == '+' || postfix[i] == '-' || postfix[i] == '*' || postfix[i] == '/' || postfix[i] == '^')
+		else if (sim == '+' || sim == '-' || sim == '*' || sim == '/' || sim == '^' || sim == '~')
 		{
 			if (StNum.GetStartIndex() < 1)
 			{
-				//throw "Ошибка: недостаточно операндов для выполнения операции";
 				throw - 1;
-
 			}
 			double secondNum = StNum.Pop();
 			double firstNum = StNum.Pop();
-
-			switch (postfix[i])
-			{
-			case '+':
-				StNum.Push(firstNum + secondNum);
-				break;
-			case '-':
-				StNum.Push(firstNum - secondNum);
-				break;
-			case '*':
-				StNum.Push(firstNum * secondNum);
-				break;
-			case '/':
-				if (secondNum == 0)				// обработка деления на ноль
-				{
-					throw "Ошибка : деление на ноль недопустимо!";
-				}
-				StNum.Push(firstNum / secondNum);
-				break;
-			case '^':
-				int p = pow(secondNum, -1);
-				if (p % 2 == 0 && firstNum < 0)
-				{
-					throw - 1;
-				}
-				StNum.Push(pow(firstNum, secondNum));
-			}
+			double result = PerformOperation(firstNum, secondNum, postfix[i]);
+			StNum.Push(result);
 		}
 	}
-	
-	if (StNum.Empty())
-	{
-		throw - 1;
+
+	if (!number.empty()) {
+		double val = stod(number);
+		StNum.Push(val);
 	}
-	
-	if (StNum.GetStartIndex() != 0) 
+	if (StNum.GetStartIndex() != 0)
 	{
-		//throw "Ошибка: неверное количество операндов в выражении";
-		throw - 1;
+		throw "РћС€РёР±РєР°: РЅРµРІРµСЂРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РѕРїРµСЂР°РЅРґРѕРІ РІ РІС‹СЂР°Р¶РµРЅРёРё";
 	}
-	return StNum.Pop();
+	double result = StNum.Pop();
+	return result;
 }
 
 
@@ -395,185 +355,157 @@ void TCalc::ToPostfix()
 {
 	postfix = "";
 	StChar.Clear();
-	string sim = "(" + infix + ")";				//  текущий символ 
-	if (!StChar.Check(infix)) {
-		throw - 1;
-	}
-	for (int i = 0; i < sim.length(); i++)		// проходим по каждому символу инфикс-строки
+	string number = "";
+
+	for (int i = 0; i < infix.size(); i++)
 	{
-		if (sim[i] == '(')					// если это (
+		char sim = infix[i];
+		if (isdigit(sim) || sim == '.')
 		{
-			StChar.Push(sim[i]);					// помещаем ее в стек для дальнейшей обработки
-		}
-
-		else if (sim[i - 1] == '(' && sim[i] == '-')	//обработка унарного минуса
-		{
-			postfix += '_';
-		}
-
-		else if (sim[i] >= '0' && sim[i] <= '9' || sim[i] == '.')		// если это цифра (операнда), то 
-		{
-			postfix += sim[i];								// добавляем ее в постфиксное выражение
-			
-		}
-		 
-		else if (sim[i] == ')')					// если это )
-		{
-			char a = StChar.Pop();
-			while (a!='(')	// то извлекаем операнды до тех пор пока не найдем "("
+			number += sim;  // СЃРѕР±РёСЂР°РµРј С‡РёСЃР»Рѕ (РІРєР»СЋС‡Р°СЏ РґРµСЃСЏС‚РёС‡РЅСѓСЋ С‚РѕС‡РєСѓ)
+			if (i == infix.size() - 1 || (!isdigit(infix[i + 1]) && infix[i + 1] != '.'))		// РїСЂРѕРІРµСЂРєР°, С‡С‚Рѕ РїРѕСЃР»Рµ С‡РёСЃР»Р° РёРґРµС‚ РїСЂРѕР±РµР» РёР»Рё СЃРёРјРІРѕР» РѕРїРµСЂР°С†РёРё
 			{
-				//postfix += " ";
-				postfix += a;				// добавляем каждый операнд в постфиксное выражение
-				a = StChar.Pop();
-
-				//postfix += " ";
+				postfix += number + " ";
+				number = "";
 			}
-			//StChar.Pop();									// удаляем "(" из стека 
 		}
-		else if (sim[i] == '+' || sim[i] == '-' || sim[i] == '*' || sim[i] == '/')		// если символ - оператор 
+		else if (sim == '(')
 		{
-			while (!StChar.Empty() && GetPriority(StChar.Top()) >= GetPriority(sim[i]))	// извлекаем операторы из стека с приоритетом >= текущему оператору
+			StChar.Push(sim);
+		}
+		else if (sim == ')')
+		{
+			while (!StChar.Empty() && StChar.Top() != '(')
 			{
-				//postfix += " ";
-				postfix += StChar.Pop();					// добавляем извлеченный оператор в постф.выражение
-				//postfix += " ";
+				postfix += StChar.Pop();
+				postfix += " ";
 			}
-			StChar.Push(sim[i]);								// помещаем текущий оператор в стек 
-		}	
+			StChar.Pop();
+		}
+		else if (sim == '+' || sim == '-' || sim == '*' || sim == '/' || sim == '^')
+		{
+			while (!StChar.Empty() && GetPriority(StChar.Top()) >= GetPriority(sim))
+			{
+				postfix += StChar.Pop();
+				postfix += " ";
+			}
+			StChar.Push(sim);
+		}
 	}
-	while (!StChar.Empty())				// перемещаем оставшиеся операторы из стека в постф выражение 
+	while (!StChar.Empty())		// РїРµСЂРµРјРµС‰Р°РµРј РѕСЃС‚Р°РІС€РёРµСЃСЏ РѕРїРµСЂР°С‚РѕСЂС‹ РёР· СЃС‚РµРєР° РІ РїРѕСЃС‚С„РёРєСЃРЅРѕРµ РІС‹СЂР°Р¶РµРЅРёРµ
 	{
-		//postfix += " ";
 		postfix += StChar.Pop();
-		//postfix += " ";
+		postfix += " ";
 	}
-	
 }
+
+
 
 
 double TCalc::Calc()
 {
-	string str = '(' + infix + ')';
-	StChar.Clear();
+	string str = "(" + infix + ")";
 	StNum.Clear();
-	if (!StChar.Check(infix))
+	StChar.Clear();
+
+	if (!StChar.Check(infix))			// РїСЂРѕРІРµСЂСЏРµРј РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚СЊ СЃРєРѕР±РѕРє РЅР° РїР°СЂРЅРѕСЃС‚СЊ
 	{
-		throw - 1;
+		throw "РѕС€РёР±РєР°: РЅРµРєРѕСЂСЂРµРєС‚РЅРѕРµ РІС‹СЂР°Р¶РµРЅРёРµ (РЅРµРїР°СЂРЅС‹Рµ СЃРєРѕР±РєРё)!";
 	}
-	for (int i = 0; i < str.size(); i++)
+
+	for (int i = 0; i < str.size(); ++i)
 	{
 		char tmp = str[i];
+
 		if (tmp == '(')
 		{
-			StChar.Push(tmp);
+			StChar.Push(tmp);		// РїРѕРјРµС‰Р°РµРј РІ СЃС‚РµРє РѕРїРµСЂР°С‚РѕСЂРѕРІ
 		}
-
-
-		else if (str[i - 1] == '(' && tmp == '-')
+		else if (tmp == '-')
 		{
-			str[i] = '_';
-		}
-
-
-
-		else if (i > 0 && tmp >= '0' && tmp <= '9' && str[i - 1] == '_')
-		{
-			size_t idx;
-			double num = stod(&tmp, &idx);
-			StNum.Push(num * (-1.0));
-			i += idx - 1;
-		}
-		else if (tmp >= '0' && tmp <= '9' || tmp == '.')
-		{
-			size_t idx;
-			double num = stod(&tmp, &idx);
-			StNum.Push(num);
-			i += idx - 1;
-		}
-		else if (tmp - ')')
-		{
-			char a = StChar.Pop();
-			while (a != '(')
+			if (i == 0 || str[i - 1] == '(')		// РїСЂРѕРІРµСЂРєР° РЅР° СѓРЅР°СЂРЅС‹Р№ РјРёРЅСѓСЃ
 			{
-				double second_num = StNum.Pop();
-				double first_num = StNum.Pop();
-				if (a == '+')
+				str[i] = '_';		// РѕР±РѕР·РЅР°С‡Р°РµРј СѓРЅР°СЂРЅС‹Р№ РјРёРЅСѓСЃ РєР°Рє РѕС‚РґРµР»СЊРЅС‹Р№ СЃРёРјРІРѕР»
+			}
+			else					// СЌС‚Рѕ Р±РёРЅР°СЂРЅС‹Р№ РјРёРЅСѓСЃ
+			{
+				while (!StChar.Empty() && GetPriority(StChar.Top()) >= GetPriority(tmp))		// РІС‹РїРѕР»РЅСЏРµРј РІСЃРµ РѕРїРµСЂР°С†РёРё РёР· СЃС‚РµРєР° >= РїРѕ РїСЂРёРѕСЂРёС‚РµС‚Сѓ
 				{
-					StNum.Push(first_num + second_num);
+					char op = StChar.Pop();
+					double secondNum = StNum.Pop();
+					double firstNum = StNum.Pop();
+					StNum.Push(PerformOperation(firstNum, secondNum, op));
 				}
-				if (a == '-')
-				{
-					StNum.Push(first_num - second_num);
-				}
-				if (a == '*')
-				{
-					StNum.Push(first_num * second_num);
-				}
-				if (a == '/')
-				{
-					if (second_num == 0)				// обработка деления на ноль
-					{
-						throw "Ошибка : деление на ноль недопустимо!";
-					}
-					StNum.Push(first_num / second_num);
-				}
-				if (a == '^')
-				{
-					int p = pow(second_num, -1);
-					if (p % 2 == 0 && first_num < 0)
-					{
-						throw - 1;
-					}
-					StNum.Push(pow(first_num, second_num));
-				}
-				a = StChar.Pop();
+				StChar.Push(tmp);			// РєР»Р°РґРµРј РјРёРЅСѓСЃ РІ СЃС‚РµРє РѕРїРµСЂР°С‚РѕСЂРѕРІ
 			}
 		}
-		else if (tmp == '+' || tmp == '-' || tmp == '*' || tmp == '/' || tmp == '^')
+		else if (isdigit(tmp) || tmp == '.')		// С†РёС„СЂР° РёР»Рё С‚РѕС‡РєР°
 		{
-			while (GetPriority(StChar.Top()) >= GetPriority(tmp))
+			size_t idx;
+			double num = stod(str.substr(i), &idx);		// РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ СЃС‚СЂРѕРєРё РІ С‡РёСЃР»Рѕ
+			StNum.Push(num);							// РєР»Р°РґРµРј РІ СЃС‚РµРє С‡РёСЃРµР»
+			i += idx - 1;
+		}
+		else if (tmp == ')')
+		{
+			while (!StChar.Empty() && StChar.Top() != '(')		// РІС‹С‡РёСЃР»СЏРµРј РІСЃРµ РѕРїРµСЂР°С†РёРё РІ С‚РµРєСѓС‰РёС… СЃРєРѕР±РєР°С… 
 			{
-				double second_num = StNum.Pop();
-				double first_num = StNum.Pop();
-				char a = StChar.Pop();
-				if (a == '+')
-				{
-					StNum.Push(first_num + second_num);
-				}
-				if (a == '-')
-				{
-					StNum.Push(first_num - second_num);
-				}
-				if (a == '*')
-				{
-					StNum.Push(first_num * second_num);
-				}
-				if (a == '/')
-				{
-					if (second_num == 0)				// обработка деления на ноль
-					{
-						throw "Ошибка : деление на ноль недопустимо!";
-					}
-					StNum.Push(first_num / second_num);
-				}
-				if (a == '^')
-				{
-					int p = pow(second_num, -1);
-					if (p % 2 == 0 && first_num < 0)
-					{
-						throw - 1;
-					}
-					StNum.Push(pow(first_num, second_num));
-				}
+				char op = StChar.Pop();
+				double num2 = StNum.Pop();
+				double num1 = StNum.Pop();
+				StNum.Push(PerformOperation(num1, num2, op));
+			}
+			StChar.Pop();				// СѓР±РёСЂР°РµРј РѕС‚РєСЂС‹РІР°СЋС‰СѓСЋ СЃРєРѕР±РєСѓ
+		}
+		else if (tmp == '+' || tmp == '*' || tmp == '/' || tmp == '^')
+		{			// РІС‹РїРѕР»РЅСЏРµРј РІСЃРµ РѕРїРµСЂР°С†РёРё СЃ РїСЂРёРѕСЂРёС‚РµС‚РѕРј >= С‚РµРєСѓС‰РµР№
+			while (!StChar.Empty() && GetPriority(StChar.Top()) >= GetPriority(tmp)) {
+				char op = StChar.Pop();
+				double num2 = StNum.Pop();
+				double num1 = StNum.Pop();
+				StNum.Push(PerformOperation(num1, num2, op));
 			}
 			StChar.Push(tmp);
 		}
+		else if (tmp == '_')		// РїСЂРµРѕР±СЂР°Р·СѓРµРј РІ РѕС‚СЂРёС†Р°С‚РµР»СЊРЅРѕРµ С‡РёСЃР»Рѕ 
+		{
+			size_t idx;
+			double num = stod(str.substr(i + 1), &idx);
+			//double num = atof(&str[i + 1]);			// *** - РїСЂРёРјРµСЂ СЂР°Р±РѕС‚С‹ - РІРЅРёР·Сѓ РєРѕРґР°
+			//StNum.Push(-num);
+			i += idx;
+		}
 	}
-	double a = StNum.Pop();
-	if (StNum.Empty())
-	{
-		throw - 1;
+	if (StNum.GetStartIndex() != 0) {
+		throw "РћС€РёР±РєР°: РЅРµРІРµСЂРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РѕРїРµСЂР°РЅРґРѕРІ РІ РІС‹СЂР°Р¶РµРЅРёРё!";
 	}
-	return a;
-
+	return StNum.Pop();
 }
+
+
+
+double TCalc::PerformOperation(double num1, double num2, char op) {
+	switch (op) {
+	case '+': return num1 + num2;
+	case '-': return num1 - num2;
+	case '*': return num1 * num2;
+	case '/':
+		if (num2 == 0) throw "РћС€РёР±РєР°: РґРµР»РµРЅРёРµ РЅР° РЅРѕР»СЊ!";
+		return num1 / num2;
+	case '^': return pow(num1, num2);
+	default: throw "РћС€РёР±РєР°: РЅРµРёР·РІРµСЃС‚РЅР°СЏ РѕРїРµСЂР°С†РёСЏ!";
+	}
+}
+
+
+//РџСЂРёРјРµСЂ РґР»СЏ СЃС‚СЂРѕРєРё str = "(_123.45)":
+//РљРѕРіРґР° tmp == '_', РєРѕРґ РІС‹Р·С‹РІР°РµС‚ atof(&str[i + 1]).
+//Р—РЅР°С‡РµРЅРёРµ& str[i + 1] СѓРєР°Р·С‹РІР°РµС‚ РЅР° РїРѕРґСЃС‚СЂРѕРєСѓ "123.45)".
+//
+//atof РёРіРЅРѕСЂРёСЂСѓРµС‚ СЃРёРјРІРѕР» ) Рё РІРѕР·РІСЂР°С‰Р°РµС‚ 123.45.
+//
+//Р—РЅР°С‡РµРЅРёРµ Р·Р°РїРёСЃС‹РІР°РµС‚СЃСЏ РІ РїРµСЂРµРјРµРЅРЅСѓСЋ num.
+//РџРѕСЃР»Рµ СЌС‚РѕРіРѕ РїРµСЂРµРјРµРЅРЅР°СЏ num СЃС‚Р°РЅРѕРІРёС‚СЃСЏ СЂР°РІРЅРѕР№ 123.45.
+//
+//Рљ С‡РёСЃР»Сѓ РґРѕР±Р°РІР»СЏРµС‚СЃСЏ Р·РЅР°Рє РјРёРЅСѓСЃ(-num).
+//РўР°РєРёРј РѕР±СЂР°Р·РѕРј, -123.45 Р±СѓРґРµС‚ РіРѕС‚РѕРІРѕ РґР»СЏ РґР°Р»СЊРЅРµР№С€РёС… РґРµР№СЃС‚РІРёР№.
