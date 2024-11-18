@@ -4,7 +4,6 @@
 #include <string>
 #include <cmath>
 using namespace std;
-
 const int MAX_SZ = 10000;
 
 
@@ -24,8 +23,8 @@ public:
 	int GetStartIndex();			// индекс Num
 
 	TStack& operator=(const TStack<T>& s); //оператор присваивания
-	bool operator==(const TStack &s) const;		//сравнение равно
-	bool operator!=(const TStack &s) const;		//сравнение не равно
+	bool operator==(const TStack& s) const;		//сравнение равно
+	bool operator!=(const TStack& s) const;		//сравнение не равно
 
 	T Pop();
 	void Push(T val);						// добавление элемента в стек
@@ -173,7 +172,7 @@ void TStack<T>::Push(T val)
 {
 	if (Full())
 	{
-		throw -2;
+		throw - 2;
 	}
 	Num++;
 	pMem[Num] = val;
@@ -196,7 +195,7 @@ bool TStack<T>::Check(string str)
 			if (s.Empty())
 			{
 				return false;
-				
+
 			}
 			s.Pop();
 		}
@@ -266,16 +265,16 @@ public:
 	double Calc();				// вычисления по постфиксной записи
 
 	double PerformOperation(double firstNum, double secondNum, char op);		// алгоритм обратной польской нотации
-	
+
 	int GetPriority(char op);	// выдача приоритета для операций
 
 	void SetInfix(const string& stroka)
 	{
 		infix = stroka;
 	}
-	string GetPostfix() const 
-	{ 
-		return postfix; 
+	string GetPostfix() const
+	{
+		return postfix;
 	}
 	string GetInfix() const
 	{
@@ -326,7 +325,7 @@ double TCalc::CalcPostfix()
 		}
 		else if (sim == '+' || sim == '-' || sim == '*' || sim == '/' || sim == '^' || sim == '~')
 		{
-			if (StNum.GetStartIndex() < 1) 
+			if (StNum.GetStartIndex() < 1)
 			{
 				throw - 1;
 			}
@@ -341,7 +340,7 @@ double TCalc::CalcPostfix()
 		double val = stod(number);
 		StNum.Push(val);
 	}
-	if (StNum.GetStartIndex() != 0) 
+	if (StNum.GetStartIndex() != 0)
 	{
 		throw "Ошибка: неверное количество операндов в выражении";
 	}
@@ -402,26 +401,26 @@ void TCalc::ToPostfix()
 
 
 
-double TCalc::Calc() 
+double TCalc::Calc()
 {
 	string str = "(" + infix + ")";
 	StNum.Clear();
 	StChar.Clear();
 
 	if (!StChar.Check(infix))			// проверяем корректность скобок на парность
-	{ 
+	{
 		throw "ошибка: некорректное выражение (непарные скобки)!";
 	}
 
-	for (int i = 0; i < str.size(); ++i) 
+	for (int i = 0; i < str.size(); ++i)
 	{
 		char tmp = str[i];
 
-		if (tmp == '(') 
+		if (tmp == '(')
 		{
 			StChar.Push(tmp);		// помещаем в стек операторов
 		}
-		else if (tmp == '-') 
+		else if (tmp == '-')
 		{
 			if (i == 0 || str[i - 1] == '(')		// проверка на унарный минус
 			{
@@ -446,7 +445,7 @@ double TCalc::Calc()
 			StNum.Push(num);							// кладем в стек чисел
 			i += idx - 1;
 		}
-		else if (tmp == ')') 
+		else if (tmp == ')')
 		{
 			while (!StChar.Empty() && StChar.Top() != '(')		// вычисляем все операции в текущих скобках 
 			{

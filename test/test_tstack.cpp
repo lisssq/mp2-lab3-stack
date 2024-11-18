@@ -4,7 +4,8 @@
 #include "gtest.h"
 
 
-TEST(TStack, can_create_stack_with_positive_length) 
+
+TEST(TStack, can_create_stack_with_positive_length)
 {
     ASSERT_NO_THROW(TStack<int> stack(10));  // Проверка на создание стека с положительным размером
 }
@@ -25,7 +26,7 @@ TEST(TCalc, test2)
     calc.SetInfix("(5+9-8)*4-14/7+5");
     calc.ToPostfix();
     ASSERT_EQ(calc.GetPostfix(), "5 9 + 8 - 4 * 14 7 / - 5 + ");
-    ASSERT_EQ(calc.Calc(), 27);    
+    ASSERT_EQ(calc.Calc(), 27);
 }
 TEST(TCalc, test3)
 {
@@ -42,7 +43,7 @@ TEST(TCalc, test4)
     calc.SetInfix("(((1+5)*7-9*(4/2)-1)+15-3)");
     calc.ToPostfix();
     ASSERT_EQ(calc.GetPostfix(), "1 5 + 7 * 9 4 2 / * - 1 - 15 + 3 - ");
-    ASSERT_EQ(calc.Calc(), 35);    
+    ASSERT_EQ(calc.Calc(), 35);
 }
 
 TEST(TCalc, test5)
@@ -64,7 +65,7 @@ TEST(TCalc, test6)
 }
 
 
-TEST(TStack, can_push_and_pop_elements) 
+TEST(TStack, can_push_and_pop_elements)
 {
     TStack<int> stack(5);
     stack.Push(1);
@@ -86,7 +87,7 @@ TEST(TStack, can_check_if_stack_is_empty)
 }
 
 
-TEST(TStack, can_peek_at_top_element) 
+TEST(TStack, can_peek_at_top_element)
 {
     TStack<int> stack(5);
     stack.Push(10);
@@ -106,7 +107,7 @@ TEST(TStack, can_copy_stack)
 }
 
 
-TEST(TStack, can_assign_stack) 
+TEST(TStack, can_assign_stack)
 {
     TStack<int> stack1(5);
     stack1.Push(1);
@@ -117,4 +118,5 @@ TEST(TStack, can_assign_stack)
     ASSERT_EQ(stack2.Pop(), 2);  // Проверка на корректность присваивания стека
     ASSERT_EQ(stack2.Pop(), 1);
 }
+
 

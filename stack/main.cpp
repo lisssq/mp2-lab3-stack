@@ -1,3 +1,4 @@
+
 // Stack.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 #include <string>
@@ -26,7 +27,7 @@ int main()
 
     TCalc calculator;
 
-    
+
     calculator.SetInfix("(3 + 5 * (2 - 8 / 4) + 7)* (4 + 3 * 2 - (1 + 2))");
     cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
     calculator.ToPostfix();
@@ -94,7 +95,7 @@ int main()
     cout << "----------" << endl;
     cout << "----------" << endl;
 
-    
+
 
 
 
