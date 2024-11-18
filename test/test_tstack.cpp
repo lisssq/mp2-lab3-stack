@@ -118,4 +118,3 @@ TEST(TStack, can_assign_stack)
     ASSERT_EQ(stack2.Pop(), 1);
 }
 
-
