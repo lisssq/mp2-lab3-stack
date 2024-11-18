@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string.h>
+#include <string>
 #include <cmath>
 using namespace std;
 
@@ -20,26 +21,20 @@ public:
 	TStack(const TStack& s);			//конструктор копирования
 
 	int GetSize();					//размер стека
-	
 	int GetStartIndex();			// индекс Num
-	
 
 	TStack& operator=(const TStack<T>& s); //оператор присваивания
 	bool operator==(const TStack &s) const;		//сравнение равно
 	bool operator!=(const TStack &s) const;		//сравнение не равно
 
-
 	T Pop();
 	void Push(T val);						// добавление элемента в стек
 	bool Check(string str);
 	void Clear();							// очистка стека
-	
-
 
 	T Top() const;							// посмотреть на вершину стека
 	bool Empty() const;						// проверка на пустоту (номер эл-та = -1)
 	bool Full() const;						// проверка на заполненность (макс.сайз - 1)
-
 
 	friend istream& operator>>(istream& in, TStack& s)
 	{
@@ -50,7 +45,6 @@ public:
 		}
 		return in;
 	}
-
 	friend ostream& operator<<(ostream& out, const TStack& s)
 	{
 		for (int i = 0; i <= s.Num; i++) {
@@ -58,8 +52,6 @@ public:
 		}
 		return out;
 	}
-
-
 };
 
 
@@ -149,7 +141,6 @@ bool TStack<T>::operator==(const TStack& s) const // оператор сравнение
 		}
 	}
 	return true;
-
 }
 
 
@@ -168,12 +159,13 @@ T TStack<T>::Pop()
 {
 	if (Empty())
 	{
-		throw -2;
+		throw - 2;
 	}
 	T tmp = pMem[Num];
 	Num--;
 	return tmp;
 }
+
 
 
 template <class T>
@@ -209,10 +201,6 @@ bool TStack<T>::Check(string str)
 			s.Pop();
 		}
 	}
-	/*if (!s.Empty())
-	{
-		return false;
-	}*/
 	return true;
 }
 
@@ -236,7 +224,7 @@ T TStack<T>::Top() const
 {
 	if (Empty())
 	{
-		throw "Ошибка: попытка доступа к вершине пустого стека";
+		throw "ошибка: попытка доступа к вершине пустого стека";
 	}
 	return pMem[Num];
 }
@@ -263,7 +251,6 @@ int TStack<T>::GetStartIndex()					// индекс Num
 }
 
 
-
 // ----------------------------------------------------------------------------------
 
 
@@ -277,6 +264,8 @@ public:
 	void ToPostfix();			// преобразовать из infix в postfix
 	double CalcPostfix();		// перевод в постфиксную форму
 	double Calc();				// вычисления по постфиксной записи
+
+	double PerformOperation(double firstNum, double secondNum, char op);		// алгоритм обратной польской нотации
 	
 	int GetPriority(char op);	// выдача приоритета для операций
 
@@ -335,67 +324,28 @@ double TCalc::CalcPostfix()
 			//cout << "Добавлено число в стек: " << num << endl; // Для отладки
 			number = "";
 		}
-		else if (sim == '+' || sim == '-' || sim == '*' || sim == '/' || sim == '^')
+		else if (sim == '+' || sim == '-' || sim == '*' || sim == '/' || sim == '^' || sim == '~')
 		{
 			if (StNum.GetStartIndex() < 1) 
 			{
-				//throw "Ошибка: недостаточно операндов для выполнения операции";
 				throw - 1;
 			}
 			double secondNum = StNum.Pop();
 			double firstNum = StNum.Pop();
-			double result = 0.0;
-
-			//cout << "Операция: " << firstNum << " " << sim << " " << secondNum << endl;  // Добавьте этот вывод
-
-
-			switch (postfix[i])
-			{
-			case '+':
-				//StNum.Push(firstNum + secondNum);
-				result = firstNum + secondNum;
-				break;
-			case '-':
-				//StNum.Push(firstNum - secondNum);
-				result = firstNum - secondNum;
-				break;
-			case '*':
-				//StNum.Push(firstNum * secondNum);
-				result = firstNum * secondNum;
-				break;
-			case '/':
-				if (secondNum == 0)				// обработка деления на ноль
-				{
-					throw "Ошибка : деление на ноль недопустимо!";
-				}
-				//StNum.Push(firstNum / secondNum);
-				result = firstNum / secondNum;
-				break;
-			case '^':
-				//StNum.Push(pow(firstNum, secondNum)); // uспользуем функцию pow из <cmath>
-				result = pow(firstNum, secondNum);
-				break;
-			}
+			double result = PerformOperation(firstNum, secondNum, postfix[i]);
 			StNum.Push(result);
-			//cout << "Результат операции: " << result << endl; // Для отладки
 		}
 	}
-	/*if (!number.empty())
-	{
-		StNum.Push(stod(number));
-	}*/
+
 	if (!number.empty()) {
 		double val = stod(number);
-		//cout << "Добавлено число в стек: " << val << endl; // Лог добавления
 		StNum.Push(val);
 	}
 	if (StNum.GetStartIndex() != 0) 
 	{
 		throw "Ошибка: неверное количество операндов в выражении";
 	}
-	//return StNum.Pop();
 	double result = StNum.Pop();
-	//cout << "Результат выражения: " << result << endl;
 	return result;
 }
 
@@ -410,16 +360,12 @@ void TCalc::ToPostfix()
 	for (int i = 0; i < infix.size(); i++)
 	{
 		char sim = infix[i];
-
 		if (isdigit(sim) || sim == '.')
 		{
-			number += sim;  // Собираем число (включая десятичную точку)
-
-			// Проверка, что после числа идет пробел или символ операции
-			if (i == infix.size() - 1 || (!isdigit(infix[i + 1]) && infix[i + 1] != '.'))
+			number += sim;  // собираем число (включая десятичную точку)
+			if (i == infix.size() - 1 || (!isdigit(infix[i + 1]) && infix[i + 1] != '.'))		// проверка, что после числа идет пробел или символ операции
 			{
 				postfix += number + " ";
-				//cout << "Добавлено число в постфикс: " << number << endl; // Для отладки
 				number = "";
 			}
 		}
@@ -438,7 +384,6 @@ void TCalc::ToPostfix()
 		}
 		else if (sim == '+' || sim == '-' || sim == '*' || sim == '/' || sim == '^')
 		{
-
 			while (!StChar.Empty() && GetPriority(StChar.Top()) >= GetPriority(sim))
 			{
 				postfix += StChar.Pop();
@@ -447,20 +392,120 @@ void TCalc::ToPostfix()
 			StChar.Push(sim);
 		}
 	}
-
-	// Перемещаем оставшиеся операторы из стека в постфиксное выражение
-	while (!StChar.Empty())
+	while (!StChar.Empty())		// перемещаем оставшиеся операторы из стека в постфиксное выражение
 	{
 		postfix += StChar.Pop();
 		postfix += " ";
 	}
-	//cout << "Итоговое постфиксное выражение: " << postfix << endl;
 }
 
 
 
 
-//double TCalc::Calc()
-//{
-//	
-//}
+double TCalc::Calc() 
+{
+	string str = "(" + infix + ")";
+	StNum.Clear();
+	StChar.Clear();
+
+	if (!StChar.Check(infix))			// проверяем корректность скобок на парность
+	{ 
+		throw "ошибка: некорректное выражение (непарные скобки)!";
+	}
+
+	for (int i = 0; i < str.size(); ++i) 
+	{
+		char tmp = str[i];
+
+		if (tmp == '(') 
+		{
+			StChar.Push(tmp);		// помещаем в стек операторов
+		}
+		else if (tmp == '-') 
+		{
+			if (i == 0 || str[i - 1] == '(')		// проверка на унарный минус
+			{
+				str[i] = '_';		// обозначаем унарный минус как отдельный символ
+			}
+			else					// это бинарный минус
+			{
+				while (!StChar.Empty() && GetPriority(StChar.Top()) >= GetPriority(tmp))		// выполняем все операции из стека >= по приоритету
+				{
+					char op = StChar.Pop();
+					double secondNum = StNum.Pop();
+					double firstNum = StNum.Pop();
+					StNum.Push(PerformOperation(firstNum, secondNum, op));
+				}
+				StChar.Push(tmp);			// кладем минус в стек операторов
+			}
+		}
+		else if (isdigit(tmp) || tmp == '.')		// цифра или точка
+		{
+			size_t idx;
+			double num = stod(str.substr(i), &idx);		// преобразование строки в число
+			StNum.Push(num);							// кладем в стек чисел
+			i += idx - 1;
+		}
+		else if (tmp == ')') 
+		{
+			while (!StChar.Empty() && StChar.Top() != '(')		// вычисляем все операции в текущих скобках 
+			{
+				char op = StChar.Pop();
+				double num2 = StNum.Pop();
+				double num1 = StNum.Pop();
+				StNum.Push(PerformOperation(num1, num2, op));
+			}
+			StChar.Pop();				// убираем открывающую скобку
+		}
+		else if (tmp == '+' || tmp == '*' || tmp == '/' || tmp == '^')
+		{			// выполняем все операции с приоритетом >= текущей
+			while (!StChar.Empty() && GetPriority(StChar.Top()) >= GetPriority(tmp)) {
+				char op = StChar.Pop();
+				double num2 = StNum.Pop();
+				double num1 = StNum.Pop();
+				StNum.Push(PerformOperation(num1, num2, op));
+			}
+			StChar.Push(tmp);
+		}
+		else if (tmp == '_')		// преобразуем в отрицательное число 
+		{
+			size_t idx;
+			double num = stod(str.substr(i + 1), &idx);
+			//double num = atof(&str[i + 1]);			// *** - пример работы - внизу кода
+			//StNum.Push(-num);
+			i += idx;
+		}
+	}
+	if (StNum.GetStartIndex() != 0) {
+		throw "Ошибка: неверное количество операндов в выражении!";
+	}
+	return StNum.Pop();
+}
+
+
+
+double TCalc::PerformOperation(double num1, double num2, char op) {
+	switch (op) {
+	case '+': return num1 + num2;
+	case '-': return num1 - num2;
+	case '*': return num1 * num2;
+	case '/':
+		if (num2 == 0) throw "Ошибка: деление на ноль!";
+		return num1 / num2;
+	case '^': return pow(num1, num2);
+	default: throw "Ошибка: неизвестная операция!";
+	}
+}
+
+
+//Пример для строки str = "(_123.45)":
+//Когда tmp == '_', код вызывает atof(&str[i + 1]).
+//Значение& str[i + 1] указывает на подстроку "123.45)".
+//
+//atof игнорирует символ ) и возвращает 123.45.
+//
+//Значение записывается в переменную num.
+//После этого переменная num становится равной 123.45.
+//
+//К числу добавляется знак минус(-num).
+//Таким образом, -123.45 будет готово для дальнейших действий.
