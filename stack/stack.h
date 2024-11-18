@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string.h>
+#include <cmath>
 using namespace std;
 
 const int MAX_SZ = 10000;
@@ -305,6 +306,10 @@ int TCalc::GetPriority(char op)
 	{
 		return 2;
 	}
+	if (op == '^')
+	{
+		return 3;
+	}
 	return 0;
 }
 
@@ -327,7 +332,7 @@ double TCalc::CalcPostfix()
 			StNum.Push(stod(number));
 			number = "";
 		}
-		else if (sim == '+' || sim == '-' || sim == '*' || sim == '/')
+		else if (sim == '+' || sim == '-' || sim == '*' || sim == '/' || sim == '^')
 		{
 			if (StNum.GetStartIndex() < 1) 
 			{
@@ -355,6 +360,9 @@ double TCalc::CalcPostfix()
 				}
 				StNum.Push(firstNum / secondNum);
 				break;
+			case '^':
+				StNum.Push(pow(firstNum, secondNum)); // uспользуем функцию pow из <cmath>
+				break;
 			}
 		}
 		
@@ -376,6 +384,7 @@ void TCalc::ToPostfix()
 {
 	postfix = "";
 	StChar.Clear();
+
 	
 
 	for (int i = 0; i < infix.size(); i++)		// проходим по каждому символу инфикс-строки
@@ -408,9 +417,9 @@ void TCalc::ToPostfix()
 			}
 			StChar.Pop();									// удаляем "(" из стека 
 		}
-		else if (sim == '+' || sim == '-' || sim == '*' || sim == '/')		// если символ - оператор 
+		else if (sim == '+' || sim == '-' || sim == '*' || sim == '/' || sim == '^') 	// если символ - оператор 
 		{
-			while (!StChar.Empty() && GetPriority(StChar.Top()) >= GetPriority(sim))	// извлекаем операторы из стека с приоритетом >= текущему оператору
+			while (!StChar.Empty() && ((sim != '^' && GetPriority(StChar.Top()) >= GetPriority(sim) || (sim == '^' && GetPriority(StChar.Top()) > GetPriority(sim)))))		// извлекаем операторы из стека с приоритетом >= текущему оператору
 			{
 				//postfix += " ";
 				postfix += StChar.Pop();					// добавляем извлеченный оператор в постф.выражение

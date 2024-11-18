@@ -66,5 +66,19 @@ int main()
     cout << "----------" << endl;
 
 
+
+
+    calculator.SetInfix("3+5*2^3-4");
+    cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
+    calculator.ToPostfix();
+    cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
+    // ожидается ответ:  3 5 2 3 ^ * + 4 -
+
+    // вычисляем значение постфиксного выражения и выводим результат
+    result = calculator.CalcPostfix();
+    cout << "Результат выражения: " << result << endl;
+    cout << "----------" << endl;
+
+
     return 0;
 }
