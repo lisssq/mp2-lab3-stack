@@ -23,7 +23,7 @@ public:
 	int GetStartIndex();			// индекс Num
 	
 
-	TStack& operator=(const TStack<T> s);			//оператор присваивания
+	TStack& operator=(const TStack<T>& s); //оператор присваивания
 	bool operator==(const TStack &s) const;		//сравнение равно
 	bool operator!=(const TStack &s) const;		//сравнение не равно
 
@@ -79,7 +79,11 @@ TStack <T>::TStack(int _MaxSize)		// конструктор инициализации
 template <class T>
 TStack<T>::~TStack()					// деструктор
 {
-	delete[] pMem;
+	if (pMem)
+	{
+		delete[] pMem;
+		pMem = nullptr;
+	}
 }
 
 
@@ -101,14 +105,14 @@ TStack<T>::TStack(const TStack& s)		// конструктор копирования
 
 
 template <class T>
-TStack<T>& TStack<T>::operator=(const TStack<T> s) 	// оператор присваивания
+TStack<T>& TStack<T>::operator=(const TStack<T>& s) 	// оператор присваивания
 {
 	if (this != &s)
 	{
 		if (MaxSize != s.MaxSize)
 		{
-			MaxSize = s.MaxSize;
 			delete[] pMem;
+			MaxSize = s.MaxSize;
 			pMem = new T[MaxSize];
 		}
 		Num = s.Num;
@@ -161,9 +165,9 @@ bool TStack<T>::operator!=(const TStack& s) const // оператор сравнение
 template <class T>
 T TStack<T>::Pop()
 {
-	if (this->Empty())
+	if (Empty())
 	{
-		throw "Ошибка: попытка извлечь элемент из пустого стека";
+		throw -2;
 	}
 	T tmp = pMem[Num];
 	Num--;
@@ -174,9 +178,9 @@ T TStack<T>::Pop()
 template <class T>
 void TStack<T>::Push(T val)
 {
-	if (this->Full())
+	if (Full())
 	{
-		throw "Ошибка: стек переполнен";
+		throw -2;
 	}
 	Num++;
 	pMem[Num] = val;
@@ -199,14 +203,15 @@ bool TStack<T>::Check(string str)
 			if (s.Empty())
 			{
 				return false;
-				s.Pop();
+				
 			}
+			s.Pop();
 		}
 	}
-	if (!s.Empty())
+	/*if (!s.Empty())
 	{
 		return false;
-	}
+	}*/
 	return true;
 }
 
@@ -228,7 +233,7 @@ bool TStack<T>::Full() const
 template <class T>
 T TStack<T>::Top() const
 {
-	if (this->Empty())
+	if (Empty())
 	{
 		throw "Ошибка: попытка доступа к вершине пустого стека";
 	}
@@ -308,19 +313,26 @@ int TCalc::GetPriority(char op)
 double TCalc::CalcPostfix()
 {
 	StNum.Clear();
+	string number = "";
 	for (int i = 0; i < postfix.size(); i++)
 	{
-		if (postfix[i] >= '0' && postfix[i] <= '9')
+		char sim = postfix[i];
+
+		if (isdigit(sim) || sim == '.')
 		{
-			StNum.Push(postfix[i] - '0');		// преобразование символа в число
+			number += sim;		// собираем число
 		}
-		else if (postfix[i] == '+' || postfix[i] == '-' || postfix[i] == '*' || postfix[i] == '/')
+		else if (sim == ' ' && !number.empty())
+		{
+			StNum.Push(stod(number));
+			number = "";
+		}
+		else if (sim == '+' || sim == '-' || sim == '*' || sim == '/')
 		{
 			if (StNum.GetStartIndex() < 1) 
 			{
 				//throw "Ошибка: недостаточно операндов для выполнения операции";
 				throw - 1;
-
 			}
 			double secondNum = StNum.Pop();
 			double firstNum = StNum.Pop();
@@ -347,6 +359,10 @@ double TCalc::CalcPostfix()
 		}
 		
 	}
+	if (!number.empty())
+	{
+		StNum.Push(stod(number));
+	}
 	if (StNum.GetStartIndex() != 0) 
 	{
 		throw "Ошибка: неверное количество операндов в выражении";
@@ -366,10 +382,17 @@ void TCalc::ToPostfix()
 	{
 		char sim = infix[i];					// извлекаем текущий символ 
 
-		if (infix[i] >= '0' && infix[i] <= '9')		// если это цифра (операнда), то 
+		if (isdigit(sim))		// если это цифра (операнда), то 
 		{
-			postfix += sim;								// добавляем ее в постфиксное выражение
-			
+			while (i < infix.size() && isdigit(infix[i]))
+			{
+				postfix += infix[i];		
+				//postfix += " ";
+				i++; // добавляем ее в постфиксное выражение
+
+			}
+			postfix += " ";  // добавляем пробел после числа
+			i--;  // компенсируем лишний инкремент
 		}
 		else if (sim == '(')					// если это (
 		{
@@ -381,7 +404,7 @@ void TCalc::ToPostfix()
 			{
 				//postfix += " ";
 				postfix += StChar.Pop();					// добавляем каждый операнд в постфиксное выражение
-				//postfix += " ";
+				postfix += " ";
 			}
 			StChar.Pop();									// удаляем "(" из стека 
 		}
@@ -391,7 +414,7 @@ void TCalc::ToPostfix()
 			{
 				//postfix += " ";
 				postfix += StChar.Pop();					// добавляем извлеченный оператор в постф.выражение
-				//postfix += " ";
+				postfix += " ";
 			}
 			StChar.Push(sim);								// помещаем текущий оператор в стек 
 		}	
@@ -400,7 +423,7 @@ void TCalc::ToPostfix()
 	{
 		//postfix += " ";
 		postfix += StChar.Pop();
-		//postfix += " ";
+		postfix += " ";
 	}
 	
 }
@@ -408,6 +431,5 @@ void TCalc::ToPostfix()
 
 //double TCalc::Calc()
 //{
-//	ToPostfix();
-//	return CalcPostfix();
+//	
 //}
