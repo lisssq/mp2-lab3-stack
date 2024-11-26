@@ -134,3 +134,25 @@ TEST(TStack, can_assign_stack)
 }
 
 
+TEST(TStack, cant_create_too_large_size)
+{
+    ASSERT_ANY_THROW(TStack<int> a(1000000));
+}
+
+TEST(TStack, can_clear_stack)
+{
+    TStack<int> s(5);
+    s.Push(1);
+    s.Push(2);
+    s.Clear();
+    EXPECT_TRUE(s.Empty());
+
+}
+
+TEST(TStack, stacks_with_different_sizes_are_not_equal1)
+{
+    TStack<int> s1(8);
+    TStack<int> s2(2);
+    EXPECT_FALSE(s1 == s2);
+
+}
