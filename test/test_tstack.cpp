@@ -1,12 +1,16 @@
-#include "../stack/stack.h"
+п»ї#include "../stack/TStack.h"
+#include "../stack/TCalc.h"
 
 #include <string>
 #include "gtest.h"
 
+//РґРѕР±Р°РІРёС‚СЊ С‚РµСЃС‚ РЅР° РЅРµРєРєРѕСЂРµРєС‚РЅРѕРµ РІС‹РїРѕР»РЅРµРЅРёРµ С‚РµСЃС‚РѕРІ (РЅРµСЂРїР°РёРІР»СЊРЅРѕРµ РІС‹СЂР°Р¶РµРЅРёРµ РёР»Рё С‡РµС‚Рѕ РµС‰Рµ)
+
+
 
 TEST(TStack, can_create_stack_with_positive_length)
 {
-    ASSERT_NO_THROW(TStack<int> stack(10));  // Проверка на создание стека с положительным размером
+    ASSERT_NO_THROW(TStack<int> stack(10));  // РџСЂРѕРІРµСЂРєР° РЅР° СЃРѕР·РґР°РЅРёРµ СЃС‚РµРєР° СЃ РїРѕР»РѕР¶РёС‚РµР»СЊРЅС‹Рј СЂР°Р·РјРµСЂРѕРј
 }
 
 TEST(TCalc, test1)
@@ -63,6 +67,17 @@ TEST(TCalc, test6)
     ASSERT_EQ(calc.Calc(), 31.2);
 }
 
+TEST(TCalc, test7)
+{
+    TCalc calc;
+    calc.SetInfix("(25/8)+7.5-18*3/4-(((14+5)*7)-9)");
+    calc.ToPostfix();
+    ASSERT_EQ(calc.GetPostfix(), "25 8 / 7.5 + 18 3 * 4 / - 14 5 + 7 * 9 - - ");
+    double a = (25.0 / 8) + 7.5 - 18 * 3.0 / 4 - (((14 + 5) * 7) - 9);
+    //
+    ASSERT_EQ(calc.Calc(), a);
+}
+
 
 TEST(TStack, can_push_and_pop_elements)
 {
@@ -71,18 +86,18 @@ TEST(TStack, can_push_and_pop_elements)
     stack.Push(2);
     stack.Push(3);
 
-    ASSERT_EQ(stack.Pop(), 3);  // Проверка на правильность извлечения последнего элемента
-    ASSERT_EQ(stack.Pop(), 2);  // Проверка на правильность извлечения следующего элемента
-    ASSERT_EQ(stack.Pop(), 1);  // Проверка на правильность извлечения первого элемента
+    ASSERT_EQ(stack.Pop(), 3);  // РџСЂРѕРІРµСЂРєР° РЅР° РїСЂР°РІРёР»СЊРЅРѕСЃС‚СЊ РёР·РІР»РµС‡РµРЅРёСЏ РїРѕСЃР»РµРґРЅРµРіРѕ СЌР»РµРјРµРЅС‚Р°
+    ASSERT_EQ(stack.Pop(), 2);  // РџСЂРѕРІРµСЂРєР° РЅР° РїСЂР°РІРёР»СЊРЅРѕСЃС‚СЊ РёР·РІР»РµС‡РµРЅРёСЏ СЃР»РµРґСѓСЋС‰РµРіРѕ СЌР»РµРјРµРЅС‚Р°
+    ASSERT_EQ(stack.Pop(), 1);  // РџСЂРѕРІРµСЂРєР° РЅР° РїСЂР°РІРёР»СЊРЅРѕСЃС‚СЊ РёР·РІР»РµС‡РµРЅРёСЏ РїРµСЂРІРѕРіРѕ СЌР»РµРјРµРЅС‚Р°
 }
 
 
 TEST(TStack, can_check_if_stack_is_empty)
 {
     TStack<int> stack(5);
-    ASSERT_TRUE(stack.Empty());  // Проверка на пустоту стека
+    ASSERT_TRUE(stack.Empty());  // РџСЂРѕРІРµСЂРєР° РЅР° РїСѓСЃС‚РѕС‚Сѓ СЃС‚РµРєР°
     stack.Push(1);
-    ASSERT_FALSE(stack.Empty());  // Проверка на непустоту стека
+    ASSERT_FALSE(stack.Empty());  // РџСЂРѕРІРµСЂРєР° РЅР° РЅРµРїСѓСЃС‚РѕС‚Сѓ СЃС‚РµРєР°
 }
 
 
@@ -90,7 +105,7 @@ TEST(TStack, can_peek_at_top_element)
 {
     TStack<int> stack(5);
     stack.Push(10);
-    ASSERT_EQ(stack.Top(), 10);  // Проверка на получение верхнего элемента без его извлечения
+    ASSERT_EQ(stack.Top(), 10);  // РџСЂРѕРІРµСЂРєР° РЅР° РїРѕР»СѓС‡РµРЅРёРµ РІРµСЂС…РЅРµРіРѕ СЌР»РµРјРµРЅС‚Р° Р±РµР· РµРіРѕ РёР·РІР»РµС‡РµРЅРёСЏ
 }
 
 
@@ -99,9 +114,9 @@ TEST(TStack, can_copy_stack)
     TStack<int> stack1(5);
     stack1.Push(1);
     stack1.Push(2);
-    TStack<int> stack2 = stack1;  // Использование конструктора копирования
+    TStack<int> stack2 = stack1;  // РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂР° РєРѕРїРёСЂРѕРІР°РЅРёСЏ
 
-    ASSERT_EQ(stack2.Pop(), 2);  // Проверка на корректность копирования стека
+    ASSERT_EQ(stack2.Pop(), 2);  // РџСЂРѕРІРµСЂРєР° РЅР° РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚СЊ РєРѕРїРёСЂРѕРІР°РЅРёСЏ СЃС‚РµРєР°
     ASSERT_EQ(stack2.Pop(), 1);
 }
 
@@ -112,9 +127,9 @@ TEST(TStack, can_assign_stack)
     stack1.Push(1);
     stack1.Push(2);
     TStack<int> stack2(5);
-    stack2 = stack1;  // Присваивание стека
+    stack2 = stack1;  // РџСЂРёСЃРІР°РёРІР°РЅРёРµ СЃС‚РµРєР°
 
-    ASSERT_EQ(stack2.Pop(), 2);  // Проверка на корректность присваивания стека
+    ASSERT_EQ(stack2.Pop(), 2);  // РџСЂРѕРІРµСЂРєР° РЅР° РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚СЊ РїСЂРёСЃРІР°РёРІР°РЅРёСЏ СЃС‚РµРєР°
     ASSERT_EQ(stack2.Pop(), 1);
 }
 
