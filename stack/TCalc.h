@@ -258,7 +258,6 @@ double TCalc::PerformOperation(double num1, double num2, char op) {
 
 
 
-
 //Пример для строки str = "(_123.45)":
 //Когда tmp == '_', код вызывает atof(&str[i + 1]).
 //Значение& str[i + 1] указывает на подстроку "123.45)".
