@@ -1,4 +1,6 @@
-﻿// Stack.cpp : This file contains the 'main' function. Program execution begins and ends there.
+﻿
+
+// Stack.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 #include <string>
 #include <iostream>
@@ -66,103 +68,109 @@ int main()
 
 
 
-/*
+    /*
 
-    calculator.SetInfix("(((1+5)*7-9*(4/2)-1)+15-3)");
-    std::cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
-    calculator.ToPostfix();
-    std::cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
-    // ожидается ответ:  15+7*942/*-1-15+3-
+        calculator.SetInfix("(((1+5)*7-9*(4/2)-1)+15-3)");
+        std::cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
+        calculator.ToPostfix();
+        std::cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
+        // ожидается ответ:  15+7*942/*-1-15+3-
 
-    // вычисляем значение постфиксного выражения и выводим результат
-    result = calculator.CalcPostfix();
-    res2 = calculator.Calc();
-    //cout << "Результат выражения: " << result << endl;
-    std::cout << "Результат выражения через Calc(): " << res2 << endl;
-    std::cout << "----------" << endl;
-    std::cout << "----------" << endl;
-
-
-
-
-    calculator.SetInfix("3+5*2^3-4");
-    std::cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
-    calculator.ToPostfix();
-    std::cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
-    // ожидается ответ:  3 5 2 3 ^ * + 4 -
-    // вычисляем значение постфиксного выражения и выводим результат
-    result = calculator.CalcPostfix();
-    res2 = calculator.Calc();
-    //cout << "Результат выражения: " << result << endl;
-    std::cout << "Результат выражения через Calc(): " << res2 << endl;
-    std::cout << "----------" << endl;
-    std::cout << "----------" << endl;
+        // вычисляем значение постфиксного выражения и выводим результат
+        result = calculator.CalcPostfix();
+        res2 = calculator.Calc();
+        //cout << "Результат выражения: " << result << endl;
+        std::cout << "Результат выражения через Calc(): " << res2 << endl;
+        std::cout << "----------" << endl;
+        std::cout << "----------" << endl;
 
 
 
 
-
-
-    calculator.SetInfix("(21/5)+9+18");
-    std::cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
-    calculator.ToPostfix();
-    std::cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
-    // ожидается ответ:  21 5 / 9 + 18 +
-    // вычисляем значение постфиксного выражения и выводим результат
-    result = calculator.CalcPostfix();
-    res2 = calculator.Calc();
-    //cout << "Результат выражения: " << result << endl;
-    std::cout << "Результат выражения через Calc(): " << res2 << endl;
-    std::cout << "----------" << endl;
-    std::cout << "----------" << endl;
+        calculator.SetInfix("3+5*2^3-4");
+        std::cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
+        calculator.ToPostfix();
+        std::cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
+        // ожидается ответ:  3 5 2 3 ^ * + 4 -
+        // вычисляем значение постфиксного выражения и выводим результат
+        result = calculator.CalcPostfix();
+        res2 = calculator.Calc();
+        //cout << "Результат выражения: " << result << endl;
+        std::cout << "Результат выражения через Calc(): " << res2 << endl;
+        std::cout << "----------" << endl;
+        std::cout << "----------" << endl;
 
 
 
 
 
 
-    calculator.SetInfix("(21/5)+9-18");
-    std::cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
-    calculator.ToPostfix();
-    std::cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
-    // ожидается ответ:  21 5 / 9 + 18 +
-    // вычисляем значение постфиксного выражения и выводим результат
-    result = calculator.CalcPostfix();
-    res2 = calculator.Calc();
-    //cout << "Результат выражения: " << result << endl;
-    std::cout << "Результат выражения через Calc(): " << res2 << endl;
-    std::cout << "----------" << endl;
-    std::cout << "----------" << endl;
-
-    
+        calculator.SetInfix("(21/5)+9+18");
+        std::cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
+        calculator.ToPostfix();
+        std::cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
+        // ожидается ответ:  21 5 / 9 + 18 +
+        // вычисляем значение постфиксного выражения и выводим результат
+        result = calculator.CalcPostfix();
+        res2 = calculator.Calc();
+        //cout << "Результат выражения: " << result << endl;
+        std::cout << "Результат выражения через Calc(): " << res2 << endl;
+        std::cout << "----------" << endl;
+        std::cout << "----------" << endl;
 
 
 
-    calculator.SetInfix("-5+3*(-2-4)");
-    std::cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
-    calculator.ToPostfix();
-    std::cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
-    // ожидается ответ:  21 5 / 9 + 18 +
-    // вычисляем значение постфиксного выражения и выводим результат
-    //result = calculator.CalcPostfix();
-    res2 = calculator.Calc();
-    //cout << "Результат выражения: " << result << endl;
-    std::cout << "Результат выражения через Calc(): " << res2 << endl;
-    std::cout << "----------" << endl;
-    std::cout << "----------" << endl;
-    */
 
 
 
-    //calculator.SetInfix("-5+3*(-2-4)");
-    //cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
-    //calculator.ToPostfix();
-    //cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
-    //// ожидается ответ:  -5 3 2 4 - - * +
-    //// вычисляем значение постфиксного выражения и выводим результат
-    //result = calculator.CalcPostfix();
-    //cout << "Результат выражения: " << result << endl;
-    //cout << "----------" << endl;
+        calculator.SetInfix("(21/5)+9-18");
+        std::cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
+        calculator.ToPostfix();
+        std::cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
+        // ожидается ответ:  21 5 / 9 + 18 +
+        // вычисляем значение постфиксного выражения и выводим результат
+        result = calculator.CalcPostfix();
+        res2 = calculator.Calc();
+        //cout << "Результат выражения: " << result << endl;
+        std::cout << "Результат выражения через Calc(): " << res2 << endl;
+        std::cout << "----------" << endl;
+        std::cout << "----------" << endl;
+
+
+
+
+
+        calculator.SetInfix("-5+3*(-2-4)");
+        std::cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
+        calculator.ToPostfix();
+        std::cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
+        // ожидается ответ:  21 5 / 9 + 18 +
+        // вычисляем значение постфиксного выражения и выводим результат
+        //result = calculator.CalcPostfix();
+        res2 = calculator.Calc();
+        //cout << "Результат выражения: " << result << endl;
+        std::cout << "Результат выражения через Calc(): " << res2 << endl;
+        std::cout << "----------" << endl;
+        std::cout << "----------" << endl;
+        */
+
+
+
+        //calculator.SetInfix("-5+3*(-2-4)");
+        //cout << "Инфиксное представление: " << calculator.GetInfix() << endl;
+        //calculator.ToPostfix();
+        //cout << "Постфиксное представление: " << calculator.GetPostfix() << endl;
+        //// ожидается ответ:  -5 3 2 4 - - * +
+        //// вычисляем значение постфиксного выражения и выводим результат
+        //result = calculator.CalcPostfix();
+        //cout << "Результат выражения: " << result << endl;
+        //cout << "----------" << endl;
 
     return 0;
 }
+
+
+
+
+
+

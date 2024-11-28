@@ -10,7 +10,6 @@
 
 
 
-
 class TCalc
 {
 	std::string infix;
@@ -40,6 +39,7 @@ public:
 		return infix;
 	}
 };
+
 
 
 
@@ -258,6 +258,7 @@ double TCalc::PerformOperation(double num1, double num2, char op) {
 
 
 
+
 //Пример для строки str = "(_123.45)":
 //Когда tmp == '_', код вызывает atof(&str[i + 1]).
 //Значение& str[i + 1] указывает на подстроку "123.45)".
@@ -269,3 +270,5 @@ double TCalc::PerformOperation(double num1, double num2, char op) {
 //
 //К числу добавляется знак минус(-num).
 //Таким образом, -123.45 будет готово для дальнейших действий.
+
+

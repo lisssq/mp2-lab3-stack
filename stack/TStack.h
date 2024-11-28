@@ -35,7 +35,7 @@ public:
 	bool Empty() const;						// проверка на пустоту (номер эл-та = -1)
 	bool Full() const;						// проверка на заполненность (макс.сайз - 1)
 
-	friend std::istream& operator>>(std::istream& in, TStack& s) 
+	friend std::istream& operator>>(std::istream& in, TStack& s)
 	{
 		T val;
 		std::cout << "Введите элементы стека (введите 0 для завершения): ";
@@ -45,7 +45,7 @@ public:
 		return in;
 	}
 
-	friend std::ostream& operator<<(std::ostream& out, const TStack<T>& s) 
+	friend std::ostream& operator<<(std::ostream& out, const TStack<T>& s)
 	{
 		for (int i = 0; i <= s.Num; i++) {
 			out << s.pMem[i] << " ";
