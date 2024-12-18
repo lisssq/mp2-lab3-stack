@@ -3,7 +3,8 @@
 #include <string.h>
 #include <string>
 #include <cmath>
-#include "TStack.h"
+//#include "TStack.h"
+#include "TStackList.h"
 
 //using namespace std;
 //const int MAX_SZ = 10000;
@@ -84,14 +85,18 @@ double TCalc::CalcPostfix()
 		}
 		else if (sim == '+' || sim == '-' || sim == '*' || sim == '/' || sim == '^' || sim == '~')
 		{
-			if (StNum.GetStartIndex() < 1)
+			if (StNum.GetStartIndex() <2)
 			{
-				throw - 1;
+				throw "Ошибка: недостаточно операндов для операции";
 			}
 			double secondNum = StNum.Pop();
 			double firstNum = StNum.Pop();
 			double result = PerformOperation(firstNum, secondNum, postfix[i]);
 			StNum.Push(result);
+		}
+		else if (!isspace(sim))
+		{
+			throw "Ошибка: недопустимый символ в выражении!";
 		}
 	}
 
@@ -99,10 +104,14 @@ double TCalc::CalcPostfix()
 		double val = stod(number);
 		StNum.Push(val);
 	}
-	if (StNum.GetStartIndex() != 0)
+	if (StNum.GetStartIndex() != 1) 
+	{
+		throw "Ошибка: неверное количество операндов в выражении!";
+	}
+	/*if (StNum.GetStartIndex() != 0)
 	{
 		throw "Ошибка: неверное количество операндов в выражении";
-	}
+	}*/
 	double result = StNum.Pop();
 	return result;
 }
@@ -114,7 +123,8 @@ void TCalc::ToPostfix()
 	postfix = "";
 	StChar.Clear();
 	std::string number = "";
-
+	int operandCount = 0;
+	int operatorCount = 0;
 	for (int i = 0; i < infix.size(); i++)
 	{
 		char sim = infix[i];
@@ -125,6 +135,7 @@ void TCalc::ToPostfix()
 			{
 				postfix += number + " ";
 				number = "";
+				operandCount++;  // добавляем операнд
 			}
 		}
 		else if (sim == '(')
@@ -133,27 +144,55 @@ void TCalc::ToPostfix()
 		}
 		else if (sim == ')')
 		{
+			//bool matched = false;
 			while (!StChar.Empty() && StChar.Top() != '(')
 			{
 				postfix += StChar.Pop();
 				postfix += " ";
+				//matched = true;
+				operatorCount++;
+			}
+			if (StChar.Empty())
+			{
+				throw "Ошибка: лишняя закрывающая скобка";
 			}
 			StChar.Pop();
 		}
-		else if (sim == '+' || sim == '-' || sim == '*' || sim == '/' || sim == '^')
+		else if (sim == '+' || sim == '-' || sim == '*' || sim == '/' || sim == '^') 
 		{
+			// Проверка на унарный минус
+			if (sim == '-' && (i == 0 || infix[i - 1] == '(' || infix[i - 1] == '+' ||
+				infix[i - 1] == '-' || infix[i - 1] == '*' || infix[i - 1] == '/')) 
+			{
+				postfix += "0 ";  // Добавляем 0 для унарного минуса
+			}
 			while (!StChar.Empty() && GetPriority(StChar.Top()) >= GetPriority(sim))
 			{
 				postfix += StChar.Pop();
 				postfix += " ";
+				operatorCount++;
 			}
 			StChar.Push(sim);
+		}
+		else if (!isspace(sim))
+		{
+			throw "Ошибка: недопустимый символ в выражении";
 		}
 	}
 	while (!StChar.Empty())		// перемещаем оставшиеся операторы из стека в постфиксное выражение
 	{
-		postfix += StChar.Pop();
+		char op = StChar.Pop();
+		if (op == '(') 
+		{
+			throw "Ошибка: лишняя открывающая скобка";
+		}
+		postfix += op;
 		postfix += " ";
+		operatorCount++;
+	}
+	if (operandCount - operatorCount != 1) 
+	{
+		throw "Ошибка: неверное количество операторов и операндов!";
 	}
 }
 
@@ -234,9 +273,9 @@ double TCalc::Calc()
 			i += idx;
 		}
 	}
-	if (StNum.GetStartIndex() != 0) {
+	/*if (StNum.GetStartIndex() != 0) {
 		throw "Ошибка: неверное количество операндов в выражении!";
-	}
+	}*/
 	return StNum.Pop();
 }
 
@@ -248,7 +287,10 @@ double TCalc::PerformOperation(double num1, double num2, char op) {
 	case '-': return num1 - num2;
 	case '*': return num1 * num2;
 	case '/':
-		if (num2 == 0) throw "Ошибка: деление на ноль!";
+		if (num2 == 0)
+		{
+			throw "Ошибка: деление на ноль!";
+		}
 		return num1 / num2;
 	case '^': return pow(num1, num2);
 	default: throw "Ошибка: неизвестная операция!";

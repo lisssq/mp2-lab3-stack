@@ -3,7 +3,8 @@
 #include <msclr/marshal_cppstd.h>
 
 #include "..\stack\TCalc.h"
-#include "..\stack\TStack.h"
+//#include "..\stack\TStack.h"
+#include "..\stack\\TStackList.h"
 
 
 namespace CppWinForm1 {
@@ -120,7 +121,7 @@ namespace CppWinForm1 {
 			   this->label2->Anchor = System::Windows::Forms::AnchorStyles::Top;
 			   this->label2->AutoSize = true;
 			   this->label2->Font = (gcnew System::Drawing::Font(L"Bookman Old Style", 12));
-			   this->label2->Location = System::Drawing::Point(212, 35);
+			   this->label2->Location = System::Drawing::Point(249, 35);
 			   this->label2->Name = L"label2";
 			   this->label2->Size = System::Drawing::Size(231, 23);
 			   this->label2->TabIndex = 3;
@@ -142,7 +143,7 @@ namespace CppWinForm1 {
 			   this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			   this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			   this->BackColor = System::Drawing::Color::Thistle;
-			   this->ClientSize = System::Drawing::Size(670, 428);
+			   this->ClientSize = System::Drawing::Size(745, 395);
 			   this->Controls->Add(this->label3);
 			   this->Controls->Add(this->label2);
 			   this->Controls->Add(this->textBox1);
@@ -155,38 +156,34 @@ namespace CppWinForm1 {
 
 		   }
 #pragma endregion
-	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e)
-	{
-		System::String^ input = textBox1->Text;		// получаем текст из textBox1
+	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+    try {
+        label1->Text = "Обработка...";
+        label3->Text = "";
 
-		// Конвертируем System::String^ в std::string
-		std::string infixExpression = msclr::interop::marshal_as<std::string>(input);
+        System::String^ input = textBox1->Text;
+        std::string infixExpression = msclr::interop::marshal_as<std::string>(input);
 
-		TCalc calc;			// создаем объект калькулятора
-		calc.SetInfix(infixExpression);		// устанавливаем инфиксное выражение
+        TCalc calc;
+        calc.SetInfix(infixExpression);
 
+        calc.ToPostfix();  // Преобразование в постфиксную форму
+        double result = calc.CalcPostfix();  // Вычисление результата
 
-		calc.ToPostfix();			// преобразуем в постфиксное выражение
-		if (calc.GetPostfix().empty())
-		{
-			label1->Text = "Ошибка: не удалось преобразовать выражение!";
-			label3->Text = "Нельзя вывести постфиксную форму!";
-
-			return;
-		}
-
-		double result = calc.CalcPostfix();		// вычисляем результат
-		if (std::isnan(result) || std::isinf(result))
-		{
-			label1->Text = "Ошибка: некорректный результат!";
-			label3->Text = "Нельзя вывести постфиксную форму!";
-			return;
-		}
-
-		std::string ress = calc.GetPostfix();
-		label1->Text = "Результат выражения: " + result.ToString();		// выводим результат
-		label3->Text = "Постфиксная форма: " + gcnew System::String(ress.c_str());
-	}
+        std::string ress = calc.GetPostfix();
+        label1->Text = "Результат выражения: " + result.ToString();
+        label3->Text = "Постфиксная форма: " + gcnew System::String(ress.c_str());
+    } catch (const char* error) {
+        label1->Text = gcnew System::String(error);
+        label3->Text = "Ошибка!";
+    } catch (const std::string& error) {
+        label1->Text = gcnew System::String(error.c_str());
+        label3->Text = "Ошибка!";
+    } catch (...) {
+        label1->Text = "Произошла неизвестная ошибка!";
+        label3->Text = "Ошибка!";
+    }
+}
 
 
 	private: System::Void textBox1_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e)

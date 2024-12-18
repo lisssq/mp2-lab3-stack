@@ -1,21 +1,10 @@
-﻿
-
-
-
-#include "../stack/TStack.h"
+﻿#include "../stack/TStackList.h"
+//#include "../stack/TStack.h"
 #include "../stack/TCalc.h"
 
 #include <string>
 #include "gtest.h"
 
-//добавить тест на неккоректное выполнение тестов (нерпаивльное выражение или чето еще)
-
-
-
-TEST(TStack, can_create_stack_with_positive_length)
-{
-    ASSERT_NO_THROW(TStack<int> stack(10));  // Проверка на создание стека с положительным размером
-}
 
 TEST(TCalc, test1)
 {
@@ -82,6 +71,172 @@ TEST(TCalc, test7)
     ASSERT_EQ(calc.Calc(), a);
 }
 
+
+
+
+
+
+
+// тесты стек на списке
+
+TEST(TStack, can_initialize_stack)      // проверяем, можно ли создать стек
+{
+   
+    ASSERT_NO_THROW(TStack<int> stack);
+}
+
+TEST(TStack, can_copy_existing_stack)
+{
+    
+    TStack<int> stack;
+    stack.Push(1);
+    ASSERT_NO_THROW(TStack<int> stack1(stack));
+}
+
+TEST(TStack, stack_is_empty_after_creation)         // проверяем, что только что созданный стек пустой.
+{
+    TStack<int> stack;
+    EXPECT_TRUE(stack.Empty());
+}
+
+TEST(TStack, stack_with_elements_is_not_empty)      // проверяем что стек не пустой 
+{
+   
+    TStack<int> stack;
+    stack.Push(1);
+    EXPECT_FALSE(stack.Empty());
+}
+
+TEST(TStack, created_stack_is_not_full)             // проверяем что созданный пустой стек не полон
+{
+    TStack<int> stack;
+    EXPECT_FALSE(stack.Full());
+}
+
+TEST(TStack, stack_with_few_elements_is_not_full)   // проверяем что наполненный стек не полон
+{
+    TStack<int> stack;
+    stack.Push(5);
+    stack.Push(10);
+    EXPECT_FALSE(stack.Full());
+}
+
+TEST(TStack, stack_is_empty_after_popping_last_element)
+{
+    TStack<int> stack;
+    stack.Push(2);
+    stack.Pop();
+    EXPECT_TRUE(stack.Empty());
+}
+
+TEST(TStack, pop_removes_top_element)
+{
+    TStack<int> stack;
+    stack.Push(3);
+    stack.Push(10);
+    stack.Pop();
+    EXPECT_EQ(stack.Top(), 3);
+}
+
+TEST(TStack, can_clear_stack)
+{
+    TStack<int> stack;
+    stack.Push(5);
+    stack.Clear();
+    EXPECT_TRUE(stack.Empty());
+}
+
+TEST(TStack, identical_stacks_are_equal)
+{
+    TStack<int> stack;
+    stack.Push(5);
+    stack.Push(2);
+
+    TStack<int> copiedStack(stack);
+    EXPECT_TRUE(stack == copiedStack);
+}
+
+TEST(TStack, different_stacks_are_not_equal)
+{
+    TStack<int> stack;
+    TStack<int> anotherStack;
+    stack.Push(5);
+    stack.Push(10);
+
+    anotherStack.Push(10);
+    anotherStack.Push(5);
+
+    EXPECT_TRUE(stack != anotherStack);
+}
+
+TEST(TStack, can_compare_equal_stacks) {
+    TStack<int> stack1;
+    TStack<int> stack2;
+    stack1.Push(10);
+    stack2.Push(10);
+    EXPECT_TRUE(stack1 == stack2);
+}
+
+
+
+TEST(TStack, throws_when_popping_from_empty_stack)
+{
+    TStack<int> stack;
+    EXPECT_ANY_THROW(stack.Pop());
+}
+
+TEST(TStack, can_push_when_memory_available)
+{
+    TStack<int> stack;
+    ASSERT_NO_THROW(stack.Push(3));
+}
+
+TEST(TStack, copied_stack_is_identical_to_original)
+{
+    TStack<int> stack;
+    stack.Push(1);
+    stack.Push(2);
+    TStack<int> copiedStack(stack);
+    EXPECT_TRUE(stack == copiedStack);
+}
+
+TEST(TStack, stacks_with_different_elements_are_not_equal)
+{
+    TStack<int> stack;
+    TStack<int> anotherStack;
+    stack.Push(1);
+    anotherStack.Push(2);
+    EXPECT_TRUE(stack != anotherStack);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// тесты стека на массиве
+/*
+TEST(TStack, can_create_stack_with_positive_length)
+{
+    ASSERT_NO_THROW(TStack<int> stack(10));  // Проверка на создание стека с положительным размером
+}
 
 TEST(TStack, can_push_and_pop_elements)
 {
@@ -160,3 +315,4 @@ TEST(TStack, stacks_with_different_sizes_are_not_equal1)
     EXPECT_FALSE(s1 == s2);
 
 }
+*/

@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TStackList.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TStack.h" />

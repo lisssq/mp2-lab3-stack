@@ -3575,7 +3575,8 @@ Result HandleExceptionsInMethodIfSupported(
   // after the exception is caught and either report or re-throw the
   // exception based on the flag's value:
   //
-  // try {
+  // 
+  // {
   //   // Perform the test method.
   // } catch (...) {
   //   if (GTEST_FLAG(catch_exceptions))
